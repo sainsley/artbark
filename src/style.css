@@ -1,0 +1,22 @@
+#comments-holder {
+	height: 100%;
+	margin: 10px;
+}
+
+#image-holder {
+	height: 100%;
+	margin: 10px;
+}
+
+#art {
+}
+
+#rating {
+	text-align: center;
+}
+
+.star {
+	height: 80px;
+	width: 80px;
+	opacity:0.6;
+}
