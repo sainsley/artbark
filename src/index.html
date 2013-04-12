@@ -87,12 +87,14 @@
         </div><!--/span-->
         <div class="span3">
           <div id="comments-holder" class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
+            <ul id="comments"class="nav nav-list">
+             
             </ul>
+						<div class="span1"></div>
+						<textarea id="main-entry" class="comment-box span10" rows="5"></textarea>
+						<div class="span1"></div>
+						<button class="post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
           </div><!--/.well -->
         </div><!--/span-->
       </div><!--/row-->
@@ -111,15 +113,26 @@
     <script src="external_js/jquery.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
 		<script>
+			//
+			// Commenting
+			//
+			add_comment = function(body) {
+				var list_item = '<li class="comment well">'+body+'</li>';
+				$("#comments").append(list_item);
+			}
+			
 		 	$(document).ready(function() {
+				//
+				// Ratings feedback
+				//
 				$(".star").mouseover(function(event) {
 					var id = $(this).data("idx");
 					var rollover = "graphics/star-fill.png"
 					for (var i = 1; i <= id; ++i) {
-						console.log($("#star-"+i).attr("src"));
 						$("#star-"+i).attr("src", rollover);
 					}
 				});
+				
 				$(".star").mouseout(function(event) {
 					var id = $(this).data("idx");
 					var original = "graphics/star.png"
@@ -129,6 +142,7 @@
 						}
 					}
 				});
+				
 				$(".star").click(function(event) {
 					var id = $(this).data("idx");
 					var filled = "graphics/star-fill.png"
@@ -141,6 +155,16 @@
 						$("#star-"+i).attr("src", empty);
 						$("#star-"+i).css("opacity", 0.6);
 					}
+				});
+				
+				$(".post").click(function(event) {
+					var entry = $(this).data("entry");
+					add_comment($(entry).val());
+					$(entry).val('');
+				});
+				
+				$("#art").click(function(event) {
+					
 				});
 		 	});
 		</script>

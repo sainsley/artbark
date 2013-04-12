@@ -1,6 +1,6 @@
 #comments-holder {
-	height: 100%;
 	margin: 10px;
+	padding-bottom: 40px;
 }
 
 #image-holder {
@@ -9,6 +9,8 @@
 }
 
 #art {
+	height:90%;
+	cursor:crosshair;
 }
 
 #rating {
@@ -23,4 +25,19 @@
 
 .brand {
 	font-family: 'Cabin Sketch', cursive;
+}
+
+.comment-box {
+	resize: none;
+}
+
+.comment {
+	background-color: white;
+}
+
+.post {
+	z-index: 5;
+	margin-top: -9px;
+	margin-bottom: 15px;
+	margin-left: 0px;
 }
