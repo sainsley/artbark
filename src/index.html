@@ -67,7 +67,7 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span9">
+        <div class="span8">
           <div id="image-holder" class="hero-unit">
 						<div id="title-bar">
 							<div id="by-line" class="span5">
@@ -83,9 +83,10 @@
 							</div>
 						</div>
             <img id="art" src="graphics/warhol.jpg"></img>
+						<div id="anotate" class="popover fade right in" style="display: block;"><div class="arrow"></div><h3 class="popover-title">I'm an annotation!</h3><div class="popover-content">Cool stuff goes here.</div></div>
           </div>
         </div><!--/span-->
-        <div class="span3">
+        <div class="span4">
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
@@ -122,6 +123,7 @@
 			}
 			
 		 	$(document).ready(function() {
+				$('#anotate').hide();
 				//
 				// Ratings feedback
 				//
@@ -164,7 +166,10 @@
 				});
 				
 				$("#art").click(function(event) {
-					
+					$('#anotate').position(event.pageX,event.pageY);
+					$('#anotate').show();
+					var offset = $('#anotate').height()/2;
+					$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
 				});
 		 	});
 		</script>
