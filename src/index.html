@@ -30,20 +30,8 @@
         }
       }
     </style>
+		<link href="external_js/fontawesome/css/font-awesome.css" rel="stylesheet">
     <link href="external_js/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="external_js/html5shiv.js"></script>
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="external_js/bootstrap/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="external_js/bootstrap/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="external_js/bootstrap/ico/apple-touch-icon-72-precomposed.png">
-		<link rel="apple-touch-icon-precomposed" href="external_js/bootstrap/ico/apple-touch-icon-57-precomposed.png">
-		<link rel="shortcut icon" href="external_js/bootstrap/ico/favicon.png">																 
-	</head>
 
   <body>
 
@@ -71,7 +59,7 @@
           <div id="image-holder" class="hero-unit">
 						<div id="title-bar">
 							<div id="by-line" class="span5">
-								<h2 id="title">Marilyn Diptych </h2>
+								<h2 id="title">"Marilyn Diptych"</h2>
 								<p id="author">Andy</p>
 							</div>
 							<div id="rating" class="span7">
@@ -83,7 +71,14 @@
 							</div>
 						</div>
             <img id="art" src="graphics/warhol.jpg"></img>
-						<div id="anotate" class="popover fade right in" style="display: block;"><div class="arrow"></div><h3 class="popover-title">I'm an annotation!</h3><div class="popover-content">Cool stuff goes here.</div></div>
+						<div id="anotate" class="popover fade right in" style="display: block;">
+							<div class="arrow"></div>
+							<h3 class="popover-title">I'm an annotation!</h3>
+							<div class="popover-content">
+								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
+								<button class="post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
+							</div>
+						</div>
           </div>
         </div><!--/span-->
         <div class="span4">
@@ -124,6 +119,7 @@
 			
 		 	$(document).ready(function() {
 				$('#anotate').hide();
+				var pin_count = 0;
 				//
 				// Ratings feedback
 				//
@@ -163,13 +159,19 @@
 					var entry = $(this).data("entry");
 					add_comment($(entry).val());
 					$(entry).val('');
+					$('#anotate').hide();
 				});
 				
 				$("#art").click(function(event) {
-					$('#anotate').position(event.pageX,event.pageY);
 					$('#anotate').show();
 					var offset = $('#anotate').height()/2;
 					$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
+					var pin_id = "pin-"+pin_count;
+					var pin = "<i id='"+pin_id+"' class='icon-map-marker pin'></i>";
+					$('body').append(pin);
+					$('#'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
+					pin_count++;
+					// TODO(sainsley): Hide pin on cancel
 				});
 		 	});
 		</script>

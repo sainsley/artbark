@@ -29,6 +29,7 @@
 
 .comment-box {
 	resize: none;
+	border-radius: 5px 5px 0px 0px;
 }
 
 .comment {
@@ -37,7 +38,14 @@
 
 .post {
 	z-index: 5;
-	margin-top: -9px;
+	margin-top: -10px;
 	margin-bottom: 15px;
 	margin-left: 0px;
+	border-radius: 0px 0px 5px 5px;
+}
+
+.pin {
+	color: #E01B3F;
+	position: absolute;
+	font-size: 40px;
 }
