@@ -48,4 +48,5 @@
 	color: #E01B3F;
 	position: absolute;
 	font-size: 40px;
+	z-index:100;
 }

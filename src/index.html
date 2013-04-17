@@ -76,7 +76,7 @@
 							<h3 class="popover-title">I'm an annotation!</h3>
 							<div class="popover-content">
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
-								<button class="post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
+								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
 							</div>
 						</div>
           </div>
@@ -85,12 +85,12 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
-             
+
             </ul>
 						<div class="span1"></div>
 						<textarea id="main-entry" class="comment-box span10" rows="5"></textarea>
 						<div class="span1"></div>
-						<button class="post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
+						<button class="comment post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
           </div><!--/.well -->
         </div><!--/span-->
       </div><!--/row-->
@@ -107,8 +107,13 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="external_js/jquery.js"></script>
+	<script src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
 		<script>
+		
+			var selectedAnnotation;
+			var expandedAnnotation;
+			
 			//
 			// Commenting
 			//
@@ -155,24 +160,87 @@
 					}
 				});
 				
-				$(".post").click(function(event) {
+				$(".comment.post").click(function(event) {
 					var entry = $(this).data("entry");
+					
 					add_comment($(entry).val());
 					$(entry).val('');
+					//$('#anotate').hide();
+				});
+				
+				$(".annotation.post").click(function(event) {
+					var entry = $(this).data("entry");
+					var pin = $('#pin-' + String(pin_count-1));
+					console.log($('#pin-' + String(pin_count-1)));
+					console.log($('#anotate'));
+					
+					add_annotation(pin[0].offsetLeft, pin[0].offsetTop, $(this).data("entry"),pin_count-1);
+					
+					//add_comment($(entry).val());
+					//$(entry).val('');
 					$('#anotate').hide();
 				});
 				
 				$("#art").click(function(event) {
+					if(expandedAnnotation!=null) {
+						expandedAnnotation[0].children[0].style.visibility = 'hidden';
+					}
+						
 					$('#anotate').show();
 					var offset = $('#anotate').height()/2;
 					$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
 					var pin_id = "pin-"+pin_count;
+					//var pin = "<div id='div"+pin_id+"' class='pin'><i id='"+pin_id+"' class='icon-map-marker pin'></i></div>";
 					var pin = "<i id='"+pin_id+"' class='icon-map-marker pin'></i>";
-					$('body').append(pin);
+						
+					//addEvent(link, 'click', function () {alert('Hi'); });
+					//$('body').append(pin);
+					$('#image-holder').append(pin);
 					$('#'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
+					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
+					$('#'+pin_id)[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
+					$('#'+pin_id)[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
+					$('#'+pin_id)[0].addEventListener("click", onClickAnnotation, false);
+					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
+					
 					// TODO(sainsley): Hide pin on cancel
 				});
+				
+				function onMouseEnterAnnotation(event)
+				{
+					// TODO(amy): highlight annotation icon on mouseover 
+					//console.log("Highlighted annotation");
+				}
+				
+				function onMouseLeaveAnnotation(event)
+				{
+					//selectedAnnotation = null;
+					console.log("No selected annotation");
+					//$(this).width(iconWidth*1.2);
+					//$(this).css('width','120%');
+				}
+				
+				add_annotation = function(x,y, body, pin_id_num) {
+					var annotationBox = "<div id='comment-" + pin_id_num + "' class='comment well'>"+body+"</div>";
+					$('#pin-' + pin_id_num).append(annotationBox);
+					console.log("appending to pin");
+					//console.log($("#pin-"+pin_id_num));
+					
+					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
+					$("#comment-"+pin_id_num)[0].style.visibility = 'hidden';
+				}
+				
+				function onClickAnnotation(event)
+				{
+					//console.log($(this));
+					//$(this).css('width','120%');
+					//$('#anotate').show();
+					//var offset = $('#anotate').height()/2;
+					expandedAnnotation = $(this);
+					$(this)[0].children[0].style.visibility = 'visible';
+					//$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
+				}
 		 	});
 		</script>
   </body>
