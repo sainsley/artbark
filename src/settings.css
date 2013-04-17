@@ -1,0 +1,23 @@
+/*
+	Colors from: http://www.colourlovers.com/palette/1389316/plated_news
+*/
+
+#btn-friends {
+	background-color: #67A3AA;
+}
+
+#btn-mentors {
+	background-color: #CCC367;
+}
+
+#btn-colleagues {
+	background-color: #AAA367;
+}
+
+.pill {
+	
+}
+
+.setting-list {
+	max-width: 300px; /* evil */
+}
