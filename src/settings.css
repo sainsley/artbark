@@ -7,17 +7,54 @@
 }
 
 #btn-mentors {
-	background-color: #CCC367;
+	background-color: #CCC367;	
 }
 
 #btn-colleagues {
 	background-color: #AAA367;
 }
 
-.pill {
+#btn-friends, #btn-mentors, #btn-colleagues {
+	cursor: move;
+	font-weight: bold;
+}
+
+#initial-list {
+	margin-bottom: 1em;
+}
+
+#initial-list .pill {
+	float: left;
+}
+
+#public-container {
+	clear: both;
+}
+
+#privacy-area {
 	
 }
 
+.pill {
+	text-align: center;
+	min-width: 200px;
+	min-height: 40px;
+	border-radius: 12px;
+	padding: 0.5em;
+	margin: 0.75em;
+	
+	
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
 .setting-list {
-	max-width: 300px; /* evil */
+	max-width: 380px; /* evil */
+}
+
+.drop-spot {
+	color: #ccc;
+	background-color: white;
+	border-style: dashed;*
 }

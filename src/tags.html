@@ -11,7 +11,7 @@
 	<link href='http://fonts.googleapis.com/css?family=Cabin+Sketch' rel='stylesheet' type='text/css'>
     <link href="external_js/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-	<link href="settings.css" rel="stylesheet">
+	<link href="tags.css" rel="stylesheet">
 	<style type="text/css">
       body {
         padding-top: 60px;
@@ -56,35 +56,18 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="hero-unit">
-				<h2>Reviewer Group Privacy Setup</h2>
+				<h2>Choose Feedback Tags</h2>
 				<p class="muted">
-					Drag and drop user group names into one of the Public or Private spots below. 
-					This setting lets you control whether people in different groups can see each other's 
-					feedback.  People in <em>public</em> groups can all see each other's feedback, while people in 
-					<em>private</em> groups can only see feedback within their own assigned group.
+					What tags do you want feedback in?
 				</p>
-				<div id="privacy-area" class="row-fluid">
-					<div id="initial-list" class="span12">
-						
-					</div>
-					<div id="public-container" class="span3 well">
-						<h3>Public</h3>
-						<div id="public-list" class="setting-list">
-							
-						</div>
-					</div>
+				
+				<div class="row-fluid well">
+					<input type="text" id="tags" class="span6" autocomplete="off" placeholder="Enter the kind of feedback that you want." data-provide="typeahead" />
 					
-					<div id="private-container" class="span3 well">
-						<h3>Private</h3>
-						<div id="private-list" class="setting-list">
-							
-						</div>
-					</div>
-					
-					<div id="next-page-area" class="span3 well">
-						<h3><a href="tags.html">Next Page &#x21A0;</a></h3>
-						<a href="tags.html" class="btn btn-info span12">Submit</a>
-					</div>
+				</div>
+				<div id="next-page-area" class="span3 well">
+					<h3><a href="index.html?tags=happy,sad">Next Page &#x21A0;</a></h3>
+					<a href="index.html?tags=happy,sad" class="btn btn-info span12">Submit</a>
 				</div>
 			</div>
 		</div><!--/row-->
@@ -104,6 +87,6 @@
     <script src="external_js/jquery.js"></script>
 	<script src="external_js/jquery-ui-1.10.2.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
-	<script src="settings.js"></script>
+	<script src="tags.js"></script>
   </body>
 </html>
