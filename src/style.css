@@ -3,6 +3,15 @@
 	padding-bottom: 40px;
 }
 
+#tags-holder {
+	margin: 10px;
+	padding-bottom: 40px;
+}
+#groups-holder {
+	margin: 10px;
+	padding-bottom: 40px;
+}
+
 #image-holder {
 	height: 100%;
 	margin: 10px;
@@ -25,6 +34,15 @@
 
 .brand {
 	font-family: 'Cabin Sketch', cursive;
+}
+
+.btn-primary
+{
+	margin: 0px 2px;
+}
+
+.nav-content {
+	padding: 0px 10px;
 }
 
 .comment-box {

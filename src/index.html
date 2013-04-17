@@ -85,13 +85,34 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
-
+				<li class="comment well tag-happy group-friends">Test comment with tag happy and group friends</li>
+				<li class="comment well tag-sad group-mentors">Test comment with tag sad and group mentors</li>
+				<li class="comment well tag-pastoral group-mentors">Test comment with tag pastoral and group mentors</li>
             </ul>
 						<div class="span1"></div>
 						<textarea id="main-entry" class="comment-box span10" rows="5"></textarea>
 						<div class="span1"></div>
 						<button class="comment post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
           </div><!--/.well -->
+
+			<div id="tags-holder" class="well sidebar-nav userType-artist">
+				<h3 class="nav-header" style="font-size: 16px;">Filter by tag</h3>
+				<div class="btn-group nav-content" id="btn-group-tags" data-toggle="buttons-checkbox">
+				  <!--<button type="button" class="btn btn-primary">Tag1</button>
+				  <button type="button" class="btn btn-primary">Tag2</button>
+				  <button type="button" class="btn btn-primary">Tag3</button> -->
+				</div>
+			</div>
+
+		  	<div id="groups-holder" class="well sidebar-nav userType-artist">
+				<h3 class="nav-header" style="font-size: 16px;">Filter by group</h3>
+
+				<div class="btn-group nav-content" id="btn-group-groups" data-toggle="buttons-checkbox">
+				  <!--<button type="button" class="btn btn-primary">Group1</button>
+				  <button type="button" class="btn btn-primary">Group2</button>
+				  <button type="button" class="btn btn-primary">Group3</button> -->
+				</div>
+			</div>
         </div><!--/span-->
       </div><!--/row-->
 
@@ -110,7 +131,51 @@
 	<script src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
 		<script>
-		
+			$.extend({
+				getUrlVars : function() {
+					var vars = [], hash;
+					var hashes = window.location.href.slice(
+							window.location.href.indexOf('?') + 1).split('&');
+					for ( var i = 0; i < hashes.length; i++) {
+						hash = hashes[i].split('=');
+						vars.push(hash[0]);
+						vars[hash[0]] = hash[1];
+					}
+					return vars;
+				},
+				getUrlVar : function(name) {
+					return $.getUrlVars()[name];
+				}
+			});
+	
+			function getSettingsFromUrl(){
+				if($.getUrlVar('tags')) 
+				{
+					artistDefinedTags = ($.getUrlVar('tags')).split(',');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+
+				if($.getUrlVar('groups')) 
+				{
+					artistDefinedGroups = ($.getUrlVar('groups')).split(',');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+				}
+
+				if($.getUrlVar('userType')) 
+				{
+					userType = $.getUrlVar('userType');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+			};
+			
+			var artistDefinedTags = new Array("pastoral","dark");
+			var artistDefinedGroups = new Array("Mentors","Friends");
+			var userType = "artist";
+
+			var filters = new Object();
+
 			var selectedAnnotation;
 			var expandedAnnotation;
 			
@@ -121,8 +186,138 @@
 				var list_item = '<li class="comment well">'+body+'</li>';
 				$("#comments").append(list_item);
 			}
-			
+
+			add_button_tag = function(tagName) {
+				var tagId = "tag-"+tagName; 
+				var newButton = '<button type="button" class="btn btn-primary btn-filter" id="' + tagId + '">#' + tagName + '</button>';
+				$("#btn-group-tags").append(newButton);
+				console.log($("#"+tagId));
+				$("#"+tagId)[0].addEventListener("click",onClickFilterButton,false);
+				$("#"+tagId)[0].className += " active";
+				filters[tagId] = 1;
+				
+			}
+
+			add_group_tag = function(groupName) {
+				var groupId = "group-" + groupName;
+				var newButton = '<button type="button" class="btn btn-primary btn-filter" id="' + groupId + '">' + groupName + '</button>';
+				$("#btn-group-groups").append(newButton);
+				$("#"+groupId)[0].addEventListener("click",onClickFilterButton,false);
+				$("#"+groupId)[0].className += " active";
+				filters[groupId] = 1;
+			}
+
+			applyfilters = function(filterIds)
+			{
+				console.log("applying filters");
+
+				// TODO(for sainsley from amy): add your own filtering behavior here 
+
+				$.each( filters, function( key, value ) {
+					console.log(key + ", " + value);
+			 		if(value==0 && $("."+key).length > 0)
+				 	{
+				 		console.log("hidden");
+				 		for (var i=0;i<$("."+key).length;i++)
+				 		{
+				 			console.log($("."+key)[i]);
+				 			$("."+key)[i].style.visibility = "hidden";
+				 		}
+				 	}
+
+				});
+
+				$.each( filters, function( key, value ) {
+					console.log(key + ", " + value);
+				 	if(value==1 && $("."+key).length > 0)
+				 	{
+				 		console.log("visible");
+				 		for (var i=0;i<$("."+key).length;i++)
+				 		{
+				 			console.log($("."+key)[i]);
+				 			$("."+key)[i].style.visibility = "visible";
+				 		}
+				 		
+				 	}
+
+				});
+
+			}
+
+
+			initFilters = function()
+			{
+				// Add filtering options for tags and groups
+				for(var i=0;i<artistDefinedTags.length;i++)
+				{
+					//var tagName = artistDefinedTags[i];
+					//
+					add_button_tag(artistDefinedTags[i]);
+					
+				}
+
+				for(var i=0;i<artistDefinedGroups.length;i++)
+				{
+					add_group_tag(artistDefinedGroups[i]);
+				}
+			}
+
+
+
+
+			onClickFilterButton = function(event)
+			{
+				console.log($(this)[0].className);
+				console.log(event);
+
+				var filterName = $(this)[0].id;
+
+				//var filterButtons = $(".btn-filter");
+
+				/*for(var i=0;i<filterButtons.length;i++)
+				{
+					if((filterButtons[i].className).indexOf("active")!=-1)
+					{
+						filters.push(filterButtons[i].id);
+					}
+				} */
+				
+				// If button is raised (not active)
+				if(filters[filterName]==0)
+				{
+					filters[filterName] = 1;
+					console.log("pressed")
+					//filters.splice(filters.indexOf($(this)[0].id),1);
+					//filters[filterName] = 0;
+				}
+				else
+				{
+					console.log("unpressed")
+					//filters.push($(this)[0].id);
+					filters[filterName] = 0;
+				}
+				console.log(filters);
+				applyfilters();
+			}
 		 	$(document).ready(function() {
+				$('.nav-tabs').button();
+				getSettingsFromUrl();
+				initFilters();
+
+				// Ghetto session control
+				if(userType == "artist")
+				{
+					if($(".userType-commenter").length > 0)
+					{
+						$(".userType-commenter").style.visibility = "hidden";
+					}
+				}	
+				else
+				{
+					$(".userType-artist").style.visibility = "hidden";
+				}
+
+			
 				$('#anotate').hide();
 				var pin_count = 0;
 				//
