@@ -90,9 +90,9 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
-				<li class="comment well tag-happy group-friends">Test comment with tag happy and group friends</li>
-				<li class="comment well tag-sad group-mentors">Test comment with tag sad and group mentors</li>
-				<li class="comment well tag-pastoral group-mentors">Test comment with tag pastoral and group mentors</li>
+				<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
+				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
+				<li class="comment well tag-pastoral group-mentors userType-artist">Looks very #pastoral to me -- your mentor.</li>
             </ul>
 						<div class="comment insertTags" style="	margin-left: 15px;">
 							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
@@ -361,7 +361,7 @@
 				 		for (var i=0;i<$("."+key).length;i++)
 				 		{
 				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.visibility = "hidden";
+				 			$("."+key)[i].style.display = "none";
 				 		}
 				 	}
 
@@ -375,7 +375,7 @@
 				 		for (var i=0;i<$("."+key).length;i++)
 				 		{
 				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.visibility = "visible";
+				 			$("."+key)[i].style.display = "visible";
 				 		}
 				 		
 				 	}
