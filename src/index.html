@@ -383,62 +383,6 @@
 						}
 					}
 				}
-
-				/*$.each( filters, function( key, value ) {
-					console.log(key + ", " + value);
-
-					if(key.indexOf("group-")==0)
-					{
-				 		if(value==0 && $("."+key).length > 0)
-					 	{
-					 		console.log("hidden");
-					 		for (var i=0;i<$("."+key).length;i++)
-					 		{
-					 			console.log($("."+key)[i]);
-					 			$("."+key)[i].style.display = "none";
-					 		}
-					 	}
-					 	if(value==1 && $("."+key).length > 0)
-					 	{
-					 		console.log("visible");
-					 		for (var i=0;i<$("."+key).length;i++)
-					 		{
-					 			console.log($("."+key)[i]);
-					 			$("."+key)[i].style.display = "block";
-					 		}
-					 		
-				 		}
-					}
-
-				});
-
-				$.each( filters, function( key, value ) {
-					console.log(key + ", " + value);
-				 	
-					if(key.indexOf("tag-")==0)
-					{
-				 		if(value==0 && $("."+key).length > 0)
-					 	{
-					 		console.log("hidden");
-					 		for (var i=0;i<$("."+key).length;i++)
-					 		{
-					 			console.log($("."+key)[i]);
-					 			$("."+key)[i].style.display = "none";
-					 		}
-					 	}
-					 	if(value==1 && $("."+key).length > 0)
-					 	{
-					 		console.log("visible");
-					 		for (var i=0;i<$("."+key).length;i++)
-					 		{
-					 			console.log($("."+key)[i]);
-					 			$("."+key)[i].style.display = "block";
-					 		}
-					 		
-				 		}
-					}
-				}); */
-
 			}
 
 			initFilters = function()
@@ -522,7 +466,19 @@
 				//
 				// Ratings feedback
 				//
+				// harcode for artist
+				if(userType=='artist') {
+					for (var id = 0; id < 4; id++) {
+						var rollover = "graphics/star-fill.png"
+						$("#star-"+id).attr("src", rollover);
+						$("#star-"+id).css("opacity", 1.0);
+					}
+				}
+				
 				$(".star").mouseover(function(event) {
+					if(userType=='artist') {
+						return;
+					}
 					var id = $(this).data("idx");
 					var rollover = "graphics/star-fill.png"
 					for (var i = 1; i <= id; ++i) {
@@ -531,6 +487,9 @@
 				});
 				
 				$(".star").mouseout(function(event) {
+					if(userType=='artist') {
+						return;
+					}
 					var id = $(this).data("idx");
 					var original = "graphics/star.png"
 					for (var i = 1; i <= id; ++i) {
@@ -541,6 +500,9 @@
 				});
 				
 				$(".star").click(function(event) {
+					if(userType=='artist') {
+						return;
+					}
 					var id = $(this).data("idx");
 					var filled = "graphics/star-fill.png"
 					var empty = "graphics/star.png"
