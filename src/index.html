@@ -304,7 +304,11 @@
 					list_item += " tag-" + tags[i];
 				}
 				
-				list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
+				if (userType=="artist") {
+					list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+body+'</li>';
+				} else {
+					list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
+				}
 				//list_item += '">'+body+'</li>';
 				console.log(list_item);
 
@@ -466,14 +470,6 @@
 				//
 				// Ratings feedback
 				//
-				// harcode for artist
-				if(userType=='artist') {
-					for (var id = 0; id < 4; id++) {
-						var rollover = "graphics/star-fill.png"
-						$("#star-"+id).attr("src", rollover);
-						$("#star-"+id).css("opacity", 1.0);
-					}
-				}
 				
 				$(".star").mouseover(function(event) {
 					if(userType=='artist') {
@@ -638,6 +634,48 @@
 					}
 					$(this)[0].children[0].style.display = 'block';
 					//$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
+				}
+				
+				// harcode for artist
+				if(userType=='artist') {
+					for (var id = 0; id < 4; id++) {
+						var rollover = "graphics/star-fill.png"
+						$("#star-"+id).attr("src", rollover);
+						$("#star-"+id).css("opacity", 1.0);
+					}
+					// hardcode annotations
+					for (i = 0; i < 4; i++) {
+						var entry = "";
+						if (i == 0) {
+							pinX = 500;
+							pinY = 700;
+							entry = "love it! -- your friend";
+						} 
+						if (i == 1) {
+							pinX = 620;
+							pinY = 550;
+							entry = "needs work -- your mentor";
+						}
+						if (i == 2) {
+							pinX = 480;
+							pinY = 300;
+							entry = "nice color -- your mentor";
+						}
+						if (i == 3) {
+							pinX = 200;
+							pinY = 450;
+							entry = "this one is my fav -- your friend";
+						}
+						add_pin();
+						var pin = $('#pin-' + String(pin_count-1));
+						console.log($('#pin-' + String(pin_count-1)));
+						console.log($('#anotate'));
+				
+						add_annotation(pin[0].offsetLeft, pin[0].offsetTop, entry,pin_count-1);
+				
+						add_comment(entry, pin_count-1);
+						$('#anotate').hide();
+					}	
 				}
 		 	});
 		</script>
