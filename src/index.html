@@ -304,7 +304,11 @@
 					list_item += " tag-" + tags[i];
 				}
 				
-				list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
+				if (userType=="artist") {
+					list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+body+'</li>';
+				} else {
+					list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
+				}
 				//list_item += '">'+body+'</li>';
 				console.log(list_item);
 
@@ -644,22 +648,22 @@
 						if (i == 0) {
 							pinX = 500;
 							pinY = 700;
-							entry = "love it!";
+							entry = "love it! -- your friend";
 						} 
 						if (i == 1) {
 							pinX = 620;
 							pinY = 550;
-							entry = "needs work";
+							entry = "needs work -- your mentor";
 						}
 						if (i == 2) {
 							pinX = 480;
 							pinY = 300;
-							entry = "nice color";
+							entry = "nice color -- your mentor";
 						}
 						if (i == 3) {
 							pinX = 200;
 							pinY = 450;
-							entry = "this one is my fav";
+							entry = "this one is my fav -- your friend";
 						}
 						add_pin();
 						var pin = $('#pin-' + String(pin_count-1));
