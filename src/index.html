@@ -339,7 +339,7 @@
 			}
 
 			add_group_tag = function(groupName) {
-				var groupId = "group-" + groupName;
+				var groupId = "group-" + groupName.toLowerCase();
 				var newButton = '<button type="button" class="btn btn-primary btn-filter" id="' + groupId + '">' + groupName + '</button>';
 				$("#btn-group-groups").append(newButton);
 				$("#"+groupId)[0].addEventListener("click",onClickFilterButton,false);
@@ -350,37 +350,94 @@
 			applyfilters = function(filterIds)
 			{
 				console.log("applying filters");
+				console.log(filters)
+				var comments = $("li.comment");
 
-				// TODO(for sainsley from amy): add your own filtering behavior here 
+				console.log(comments);
 
-				$.each( filters, function( key, value ) {
+				if(comments.length>0)
+				{
+					for (var i=0;i<comments.length;i++)
+					{
+						var isVisible = true;
+						var classes = comments[i].className.split(" ");
+						console.log("comment: " + comments[i])
+						for(var j=0;j<classes.length;j++)
+						{
+							console.log(classes)
+							if(classes[j].indexOf("tag-")==0 || classes[j].indexOf("group-")==0)
+							{
+								isVisible = isVisible & filters[classes[j]];
+								console.log(isVisible)
+							}
+
+						}
+
+						if(isVisible)
+						{
+							comments[i].style.display = "block";
+						}
+						else
+						{
+							comments[i].style.display = "none";
+						}
+					}
+				}
+
+				/*$.each( filters, function( key, value ) {
 					console.log(key + ", " + value);
-			 		if(value==0 && $("."+key).length > 0)
-				 	{
-				 		console.log("hidden");
-				 		for (var i=0;i<$("."+key).length;i++)
-				 		{
-				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.display = "none";
+
+					if(key.indexOf("group-")==0)
+					{
+				 		if(value==0 && $("."+key).length > 0)
+					 	{
+					 		console.log("hidden");
+					 		for (var i=0;i<$("."+key).length;i++)
+					 		{
+					 			console.log($("."+key)[i]);
+					 			$("."+key)[i].style.display = "none";
+					 		}
+					 	}
+					 	if(value==1 && $("."+key).length > 0)
+					 	{
+					 		console.log("visible");
+					 		for (var i=0;i<$("."+key).length;i++)
+					 		{
+					 			console.log($("."+key)[i]);
+					 			$("."+key)[i].style.display = "block";
+					 		}
+					 		
 				 		}
-				 	}
+					}
 
 				});
 
 				$.each( filters, function( key, value ) {
 					console.log(key + ", " + value);
-				 	if(value==1 && $("."+key).length > 0)
-				 	{
-				 		console.log("visible");
-				 		for (var i=0;i<$("."+key).length;i++)
-				 		{
-				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.display = "block";
+				 	
+					if(key.indexOf("tag-")==0)
+					{
+				 		if(value==0 && $("."+key).length > 0)
+					 	{
+					 		console.log("hidden");
+					 		for (var i=0;i<$("."+key).length;i++)
+					 		{
+					 			console.log($("."+key)[i]);
+					 			$("."+key)[i].style.display = "none";
+					 		}
+					 	}
+					 	if(value==1 && $("."+key).length > 0)
+					 	{
+					 		console.log("visible");
+					 		for (var i=0;i<$("."+key).length;i++)
+					 		{
+					 			console.log($("."+key)[i]);
+					 			$("."+key)[i].style.display = "block";
+					 		}
+					 		
 				 		}
-				 		
-				 	}
-
-				});
+					}
+				}); */
 
 			}
 
