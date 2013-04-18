@@ -58,16 +58,28 @@
 			<div class="hero-unit">
 				<h2>Choose Feedback Tags</h2>
 				<p class="muted">
-					What tags do you want feedback in?
+					Enter tags below to direct people's feedback.  Try things like 'color', 'mood', or 'design'.
 				</p>
 				
-				<div class="row-fluid well">
-					<input type="text" id="tags" class="span6" autocomplete="off" placeholder="Enter the kind of feedback that you want." data-provide="typeahead" />
+				<div class="span8 well">
+					<input type="text" id="tags" class="span6" autocomplete="off" placeholder="Enter the kind of feedback that you want." data-provide="typeahead">
+					<span id="btn-add-tag" class="btn btn-success">
+						<i class="icon-plus icon-white"></i>
+						Add Tag
+					</span>
 					
+					<div class="row">
+						<div class="span3 well">
+							<h3>Your Tags</h3>
+							<div id="tag-list">
+							
+							</div>
+						</div>
+					</div>
 				</div>
 				<div id="next-page-area" class="span3 well">
-					<h3><a href="index.html?tags=happy,sad">Next Page &#x21A0;</a></h3>
-					<a href="index.html?tags=happy,sad" class="btn btn-info span12">Submit</a>
+					<h3><a href="#" class="next">Next Page &#x21A0;</a></h3>
+					<a href="#" class="btn btn-info span12 next">Submit</a>
 				</div>
 			</div>
 		</div><!--/row-->
