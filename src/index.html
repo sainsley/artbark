@@ -94,12 +94,12 @@
 				<li class="comment well tag-sad group-mentors">Test comment with tag sad and group mentors</li>
 				<li class="comment well tag-pastoral group-mentors">Test comment with tag pastoral and group mentors</li>
             </ul>
-						<div class="comment insertTags" style="	margin-left: 15px;">
+						<div class="comment insertTags userType-commenter" style="	margin-left: 15px;">
 							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
 						</div>
-						<textarea id="main-entry" class="comment-box" rows="5"></textarea>
+						<textarea id="main-entry" class="comment-box userType-commenter" rows="5"></textarea>
 						<div>
-							<button class="comment post btn btn-info" data-entry="#main-entry">Post</button>
+							<button class="comment post btn btn-info userType-commenter" data-entry="#main-entry">Post</button>
 						</div>
 					</div><!--/.well -->
 
@@ -525,6 +525,10 @@
 				});
 				
 				$("#art").click(function(event) {
+					if(userType=='artist') {
+						return;
+					}
+					
 					if(expandedAnnotation!=null) {
 						expandedAnnotation[0].children[0].style.display = 'none';
 					}
