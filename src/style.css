@@ -74,6 +74,12 @@
 	z-index:100;
 }
 
+<<<<<<< HEAD
+.insertTags
+{
+	margin: 0px 10px;
+=======
 .menu-btn {
 	float: right;
+>>>>>>> ce14f81958fcaae06d4f328208856c8c288996ee
 }
