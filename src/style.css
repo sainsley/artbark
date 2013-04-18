@@ -55,6 +55,10 @@
 	word-wrap: break-word;
 }
 
+.annotation {
+	border-color: #E01B3F;
+}
+
 .post {
 	z-index: 5;
 	margin-top: -10px;
