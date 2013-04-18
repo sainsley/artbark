@@ -191,12 +191,79 @@
 			var selectedAnnotation;
 			var expandedAnnotation;
 			
-			//
-			// Commenting
-			//
-			add_comment = function(body) {
-				console.log("posting comment");
-
+			var comment_count = 0;
+			
+			
+			delete_comment = function(delete_btn) {
+				var comment = '#comment-'+$(delete_btn).data("id");
+				var pin = $(comment).data("pin");
+				// there is a pin
+				if (pin != -1) {
+					var pinid = '#pin-'+pin;
+					$(pinid).remove();
+				}
+				$(comment).remove();
+			}
+			
+			edit_comment = function(edit_btn) {
+				var comment = '#show-'+$(edit_btn).data("id");
+				var current = $(comment).text();
+				$(comment).hide();
+				var edit = '#edit-'+$(edit_btn).data("id");
+				var entry = '#entry-'+$(edit_btn).data("id");
+				$(entry).val(current);
+				$(edit).show();
+			}
+			
+			save_comment = function(save_btn) {
+				var comment = '#show-'+$(save_btn).data("id");
+				var edit = '#edit-'+$(save_btn).data("id");
+				var entry = '#entry-'+$(save_btn).data("id");
+				var current = $(entry).val();
+				var toolbar = get_tool_panel($(save_btn).data("id")); 
+				//$(comment).text(current);
+				$(comment).show();
+				$(comment).text(current);
+				$(comment).append(toolbar);
+				$(edit).hide();
+				configure_tools();
+				// update pin
+				comment = '#comment-'+$(save_btn).data("id");
+				var pin = $(comment).data("pin");
+				// there is a pin
+				if (pin != -1) {
+					$('#annotation-'+pin).text(current);
+				}
+			}
+			
+			get_tool_panel = function(comment_id) {
+				var edit_button = '<button class="edit menu-btn" data-id="'+comment_id+'"><i class="icon-pencil"></i></button>';
+				var delete_button = '<button class="delete menu-btn" data-id="'+comment_id+'"><i class="icon-remove"></i></button>';
+				return delete_button+edit_button;
+			}
+			
+			configure_tools = function() {
+			  $(".delete").click(function (event) {
+					delete_comment(this);
+			   });
+ 			  $(".edit").click(function (event) {
+ 					edit_comment(this);
+ 			   });
+			}
+			
+			add_comment = function(body, pin_id) {
+				// assign id to comment and make data entry for delete_button
+				// also assign pin id to comment if applicable
+				var id_string = '"comment-'+comment_count+'"';
+				var data_pin = 'data-pin="'+pin_id+'"';
+				// construct show panel
+				var toolbar = get_tool_panel(comment_count); 
+				var show_panel = '<div id="show-'+comment_count+'">'+body+toolbar+'</div>'
+				// construct edit panel
+				var entry_panel = '<input id="entry-'+comment_count+'" type="text"></input>'
+				var save_button = '<button class="save menu-btn" data-id="'+comment_count+'"><i class="icon-ok"></i></button>';
+				var edit_panel = '<div id="edit-'+comment_count+'" style="display: none;">'+entry_panel+save_button+'</div>'
+				
 				var tags = new Array;
 
 				$.each( filters, function( key, value ) {
@@ -220,10 +287,18 @@
 				{
 					list_item += " tag-" + tags[i];
 				}
-
-				list_item += '">'+body+'</li>';
+				
+				list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
+				//list_item += '">'+body+'</li>';
 				console.log(list_item);
+
 				$("#comments").append(list_item);
+			  $(".save").click(function (event) {
+					save_comment(this);
+			   });
+				 
+				configure_tools();
+				comment_count++;
 			}
 
 			add_button_tag = function(tagName) {
@@ -292,7 +367,6 @@
 
 			}
 
-			
 			initFilters = function()
 			{
 				// Add filtering options for tags and groups
@@ -309,9 +383,6 @@
 					add_group_tag(artistDefinedGroups[i]);
 				}
 			}
-
-
-
 
 			onClickFilterButton = function(event)
 			{
@@ -371,7 +442,6 @@
 						}
 					}
 				}
-
 			
 				$('#anotate').hide();
 				var pin_count = 0;
@@ -412,26 +482,29 @@
 				
 				$(".comment.post").click(function(event) {
 					var entry = $(this).data("entry");
-					
-					add_comment($(entry).val());
-					$(entry).val('');
-					//$('#anotate').hide();
+					console.log($(entry).val());
+					if ($(entry).val()) {
+						// Not associated with pin
+						add_comment($(entry).val(), -1);
+						$(entry).val('');
+					}
 				});
 				
 				$(".annotation.post").click(function(event) {
-					$('#temp-pin').hide();
-					add_pin();
-					
 					var entry = $(this).data("entry");
-					var pin = $('#pin-' + String(pin_count-1));
-					console.log($('#pin-' + String(pin_count-1)));
-					console.log($('#anotate'));
+					if ($(entry).val()) {
+						$('#temp-pin').hide();
+						add_pin();
+						var pin = $('#pin-' + String(pin_count-1));
+						console.log($('#pin-' + String(pin_count-1)));
+						console.log($('#anotate'));
 					
-					add_annotation(pin[0].offsetLeft, pin[0].offsetTop,$(entry).val(),pin_count-1);
+						add_annotation(pin[0].offsetLeft, pin[0].offsetTop,$(entry).val(),pin_count-1);
 					
-					add_comment($(entry).val());
-					$(entry).val('');
-					$('#anotate').hide();
+						add_comment($(entry).val(), pin_count-1);
+						$(entry).val('');
+						$('#anotate').hide();
+					}
 				});
 				
 				$("#art").click(function(event) {
@@ -502,13 +575,13 @@
 				
 				add_annotation = function(x,y, body, pin_id_num) {
 					
-					var annotationBox = "<div id='comment-" + pin_id_num + "' class='comment well'>"+body+"</div>";
+					var annotationBox = "<div id='annotation-" + pin_id_num + "' class='comment well'>"+body+"</div>";
 					$('#pin-' + pin_id_num).append(annotationBox);
 					console.log("appending to pin");
 					//console.log($("#pin-"+pin_id_num));
 					
 					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					$("#comment-"+pin_id_num)[0].style.display = 'none';
+					$("#annotation-"+pin_id_num)[0].style.display = 'none';
 					
 				}
 				
