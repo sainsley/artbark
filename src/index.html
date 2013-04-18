@@ -77,7 +77,7 @@
 							<h3 class="popover-title">Annotate this work</h3>
 							<div class="popover-content">
 								<div class="annotation insertTags">
-
+									Tag:
 								</div>
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
@@ -95,7 +95,7 @@
 				<li class="comment well tag-pastoral group-mentors">Test comment with tag pastoral and group mentors</li>
             </ul>
 						<div class="comment insertTags" style="	margin-left: 15px;">
-
+							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
 						</div>
 						<textarea id="main-entry" class="comment-box" rows="5"></textarea>
 						<div>
@@ -260,7 +260,7 @@
 				$(".comment-pin").mouseout(function() {
 					var pin = $(this).data("pin");
 					var pinid = '#pin-'+pin;
-					$(pinid).css('opacity', 0.5); 
+					$(pinid).css('opacity', 0.7); 
 					});
 			}
 			
