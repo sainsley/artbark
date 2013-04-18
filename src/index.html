@@ -297,6 +297,17 @@
 				if (pin_id > -1) {
 					comment_class += ' comment-pin';
 				}
+
+				if(body.indexOf("-- your mentor")>-1)
+				{
+					comment_class += ' group-mentors';
+				}
+				else if(body.indexOf("-- your friend")>-1)
+				{
+					comment_class += ' group-friends';
+				}
+
+
 				var list_item = '<li class='+comment_class;
 
 				for(var i=0;i<tags.length;i++)
@@ -377,13 +388,27 @@
 
 						}
 
+						
+						var pin = $(comments[i]).data("pin");
 						if(isVisible)
 						{
 							comments[i].style.display = "block";
+
+							if(pin != -1)
+							{
+								var pinid = '#pin-'+pin;
+								$(pinid).show();
+							}
 						}
 						else
 						{
 							comments[i].style.display = "none";
+
+							if(pin != -1)
+							{
+								var pinid = '#pin-'+pin;
+								$(pinid).hide();
+							}
 						}
 					}
 				}
