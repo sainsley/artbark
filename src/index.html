@@ -385,7 +385,7 @@
 				
 				$("#art").click(function(event) {
 					if(expandedAnnotation!=null) {
-						expandedAnnotation[0].children[0].style.visibility = 'hidden';
+						expandedAnnotation[0].children[0].style.display = 'none';
 					}
 						
 					$('#anotate').show();
@@ -438,7 +438,7 @@
 					//console.log($("#pin-"+pin_id_num));
 					
 					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					$("#comment-"+pin_id_num)[0].style.visibility = 'hidden';
+					$("#comment-"+pin_id_num)[0].style.display = 'none';
 					
 				}
 				
@@ -449,7 +449,11 @@
 					//$('#anotate').show();
 					//var offset = $('#anotate').height()/2;
 					expandedAnnotation = $(this);
-					$(this)[0].children[0].style.visibility = 'visible';
+					if($(this)[0].children[0].style.display != 'none') {
+						$(this)[0].children[0].style.display = 'none';
+						return;
+					}
+					$(this)[0].children[0].style.display = 'block';
 					//$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
 				}
 		 	});
