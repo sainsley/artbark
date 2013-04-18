@@ -71,11 +71,15 @@
 							</div>
 						</div>
             <img id="art" src="graphics/warhol.jpg"></img>
+			<!--<div class="btn-magnify"><button id="btn-magnify" type="button" class="btn btn-primary" data-toggle="button"><i id="icon-magnify" class="icon-zoom-in"></i></button></div> -->
 						<div id="anotate" class="popover fade right in" style="display: block;">
 							<div class="arrow"></div>
 							<h3 class="popover-title">Annotate this work</h3>
 							<div class="popover-content">
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
+								<div class="annotation insertTags">
+
+								</div>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
 							</div>
 							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none"></i>
@@ -93,6 +97,9 @@
 						<div class="span1"></div>
 						<textarea id="main-entry" class="comment-box span10" rows="5"></textarea>
 						<div class="span1"></div>
+						<div class="comment insertTags">
+
+						</div>
 						<button class="comment post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
           </div><!--/.well -->
 
@@ -179,6 +186,7 @@
 			var userType = "artist";
 
 			var filters = new Object();
+			
 
 			var selectedAnnotation;
 			var expandedAnnotation;
@@ -187,7 +195,34 @@
 			// Commenting
 			//
 			add_comment = function(body) {
-				var list_item = '<li class="comment well">'+body+'</li>';
+				console.log("posting comment");
+
+				var tags = new Array;
+
+				$.each( filters, function( key, value ) {
+					var tagName;
+
+					if(key.indexOf("tag-") == 0)
+					{
+						tagName = key.substring("tag-".length);
+						if(body.indexOf("#"+tagName)>-1)
+						{
+							tags.push(tagName);
+						}
+					}
+				});
+
+				console.log(tags);
+
+				var list_item = '<li class="comment well';
+
+				for(var i=0;i<tags.length;i++)
+				{
+					list_item += " tag-" + tags[i];
+				}
+
+				list_item += '">'+body+'</li>';
+				console.log(list_item);
 				$("#comments").append(list_item);
 			}
 
@@ -198,6 +233,15 @@
 				console.log($("#"+tagId));
 				$("#"+tagId)[0].addEventListener("click",onClickFilterButton,false);
 				$("#"+tagId)[0].className += " active";
+
+				var newInsertTagButton = '<button type="button" class="btn btn-primary btn-insert-tag">#' + tagName + '</button>';
+
+/*()				for(var i=0;i<$(".insertTags").length;i++)
+				{
+					$(".insertTags")[i].append(newInsertTagButton);
+				}*/
+				$(".insertTags").append(newInsertTagButton);
+
 				filters[tagId] = 1;
 				
 			}
@@ -248,7 +292,7 @@
 
 			}
 
-
+			
 			initFilters = function()
 			{
 				// Add filtering options for tags and groups
@@ -276,16 +320,6 @@
 
 				var filterName = $(this)[0].id;
 
-				//var filterButtons = $(".btn-filter");
-
-				/*for(var i=0;i<filterButtons.length;i++)
-				{
-					if((filterButtons[i].className).indexOf("active")!=-1)
-					{
-						filters.push(filterButtons[i].id);
-					}
-				} */
-				
 				// If button is raised (not active)
 				if(filters[filterName]==0)
 				{
@@ -303,22 +337,39 @@
 				console.log(filters);
 				applyfilters();
 			}
+
+			
+			/*
+			$("#btn-magnify").click(function(event) {
+				
+			});*/
+			
 		 	$(document).ready(function() {
 				$('.nav-tabs').button();
 				getSettingsFromUrl();
 				initFilters();
 
+				console.log("usertype="+userType);
 				// Ghetto session control
 				if(userType == "artist")
 				{
 					if($(".userType-commenter").length > 0)
 					{
-						$(".userType-commenter").style.visibility = "hidden";
+						for(var i=0;i<$(".userType-commenter").length;i++)
+						{
+							$(".userType-commenter")[i].style.visibility = "hidden";
+						}
 					}
 				}	
 				else
 				{
-					$(".userType-artist").style.visibility = "hidden";
+					if($(".userType-artist").length>0)
+					{
+						for(var i=0;i<$(".userType-artist").length;i++)
+						{
+							$(".userType-artist")[i].style.visibility = "hidden";
+						}
+					}
 				}
 
 			
@@ -400,6 +451,25 @@
 					
 					// TODO(sainsley): Hide pin on cancel
 				});
+
+
+				$(".btn-insert-tag").click(function(event)
+				{
+					
+					if(($(this)[0].parentElement.className).indexOf("annotation")>-1)
+					{
+						var entryArea = $("#annotation-entry");
+						
+					}
+					else if(($(this)[0].parentElement.className).indexOf("comment")>-1)
+					{
+						var entryArea = $("#main-entry");
+					}
+					console.log("writing to textarea");
+					console.log(entryArea);
+					entryArea.val(entryArea.val() + $(this)[0].innerHTML);
+				});
+
 				
 				function onMouseEnterAnnotation(event)
 				{
