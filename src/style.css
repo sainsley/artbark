@@ -72,6 +72,7 @@
 
 .pin {
 	color: #E01B3F;
+	opacity: 0.5;
 	position: absolute;
 	font-size: 40px;
 	z-index:100;

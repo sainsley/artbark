@@ -82,7 +82,7 @@
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
 							</div>
-							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none"></i>
+							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none; opacity:0.9;"></i>
 						</div>
           </div>
         </div><!--/span-->
@@ -251,6 +251,19 @@
  			   });
 			}
 			
+			link_annotations = function() {
+				$(".comment-pin").mouseover(function() {
+					var pin = $(this).data("pin");
+					var pinid = '#pin-'+pin;
+					$(pinid).css('opacity', 1.0); 
+					});
+				$(".comment-pin").mouseout(function() {
+					var pin = $(this).data("pin");
+					var pinid = '#pin-'+pin;
+					$(pinid).css('opacity', 0.5); 
+					});
+			}
+			
 			add_comment = function(body, pin_id) {
 				// assign id to comment and make data entry for delete_button
 				// also assign pin id to comment if applicable
@@ -301,6 +314,7 @@
 			   });
 				 
 				configure_tools();
+				link_annotations();
 				comment_count++;
 			}
 
