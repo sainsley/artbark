@@ -73,11 +73,12 @@
             <img id="art" src="graphics/warhol.jpg"></img>
 						<div id="anotate" class="popover fade right in" style="display: block;">
 							<div class="arrow"></div>
-							<h3 class="popover-title">I'm an annotation!</h3>
+							<h3 class="popover-title">Annotate this work</h3>
 							<div class="popover-content">
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
 							</div>
+							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none"></i>
 						</div>
           </div>
         </div><!--/span-->
@@ -131,6 +132,9 @@
 	<script src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
 		<script>
+			// for keeping track of temp pen cursor 
+			var pinX, pinY;
+		
 			$.extend({
 				getUrlVars : function() {
 					var vars = [], hash;
@@ -364,6 +368,9 @@
 				});
 				
 				$(".annotation.post").click(function(event) {
+					$('#temp-pin').hide();
+					add_pin();
+					
 					var entry = $(this).data("entry");
 					var pin = $('#pin-' + String(pin_count-1));
 					console.log($('#pin-' + String(pin_count-1)));
@@ -383,21 +390,13 @@
 						
 					$('#anotate').show();
 					var offset = $('#anotate').height()/2;
-					$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
-					var pin_id = "pin-"+pin_count;
-					//var pin = "<div id='div"+pin_id+"' class='pin'><i id='"+pin_id+"' class='icon-map-marker pin'></i></div>";
-					var pin = "<i id='"+pin_id+"' class='icon-map-marker pin'></i>";
-						
-					//addEvent(link, 'click', function () {alert('Hi'); });
-					//$('body').append(pin);
-					$('#image-holder').append(pin);
-					$('#'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					$('#'+pin_id)[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
-					$('#'+pin_id)[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
-					$('#'+pin_id)[0].addEventListener("click", onClickAnnotation, false);
-					//$('#'+pin_id)[0].className += "pin";
-					pin_count++;
+					$('#anotate').offset({ top: event.pageY-offset+6, left: event.pageX+12});
+					pinX = event.pageX-25/2;
+					pinY = event.pageY-30;
+					$('#temp-pin').show();
+					$('#temp-pin').position({ top: 0, left: 0});
+					$('#temp-pin').offset({ top: pinY, left: pinX});
+
 					
 					// TODO(sainsley): Hide pin on cancel
 				});
@@ -416,7 +415,23 @@
 					//$(this).css('width','120%');
 				}
 				
+				add_pin = function() {
+					var pin_id = "pin-"+pin_count;
+					var pin = "<i id='"+pin_id+"' class='icon-map-marker pin'></i>";
+					//addEvent(link, 'click', function () {alert('Hi'); });
+					//$('body').append(pin);
+					$('#image-holder').append(pin);
+					$('#'+pin_id).offset({ top: pinY, left: pinX});
+					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
+					$('#'+pin_id)[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
+					$('#'+pin_id)[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
+					$('#'+pin_id)[0].addEventListener("click", onClickAnnotation, false);
+					//$('#'+pin_id)[0].className += "pin";
+					pin_count++;
+				}
+				
 				add_annotation = function(x,y, body, pin_id_num) {
+					
 					var annotationBox = "<div id='comment-" + pin_id_num + "' class='comment well'>"+body+"</div>";
 					$('#pin-' + pin_id_num).append(annotationBox);
 					console.log("appending to pin");
@@ -424,6 +439,7 @@
 					
 					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					$("#comment-"+pin_id_num)[0].style.visibility = 'hidden';
+					
 				}
 				
 				function onClickAnnotation(event)
