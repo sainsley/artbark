@@ -46,8 +46,11 @@
 }
 
 .comment-box {
+	width: 94%;
+	margin-left: 15px;
+	margin-right: 15px;
 	resize: none;
-	border-radius: 5px 5px 0px 0px;
+	background-color: white;
 }
 
 .comment {
@@ -60,11 +63,11 @@
 }
 
 .post {
-	z-index: 5;
+	width: 94%;
+	margin-left: 15px;
+	margin-right: 15px;	
 	margin-top: -10px;
-	margin-bottom: 15px;
-	margin-left: 0px;
-	border-radius: 0px 0px 5px 5px;
+	margin-bottom: 10px;
 }
 
 .pin {
@@ -74,9 +77,19 @@
 	z-index:100;
 }
 
+.btn-insert-tag {
+	color: #ffffff;
+	background-color: #0088cc;
+	border-radius: 5px;
+	padding: 5px;
+}
+
 .insertTags
 {
-	margin: 0px 10px;
+	background-color: transparent;
+	width: 100%;
+	margin-right: 15px;
+	margin-bottom: -10px;
 }
 
 .menu-btn {
