@@ -183,12 +183,35 @@
 			var selectedAnnotation;
 			var expandedAnnotation;
 			
+			var comment_count = 0;
+			
 			//
 			// Commenting
 			//
-			add_comment = function(body) {
-				var list_item = '<li class="comment well">'+body+'</li>';
+			
+			delete_comment = function(delete_btn) {
+				var comment = '#'+$(delete_btn).data("comment");
+				var pin = $(comment).data("pin");
+				// there is a pin
+				if (pinid != -1) {
+					var pinid = '#pin-'+pin;
+					$(pinid).remove();
+				}
+				$(comment).remove();
+			}
+			
+			add_comment = function(body, pin_id) {
+				// assign id to comment and make data entry for delete_button
+				// also assign pin id to comment if applicable
+				var id_string = '"comment-'+comment_count+'"';
+				var data_pin = 'data-pin="'+pin_id+'"';
+				var delete_button = '<button class="delete" data-comment='+id_string+'><i class="icon-remove"></i></button>';
+				var list_item = '<li class="comment well"'+data_pin+'id='+id_string+'>'+body+delete_button+'</li>';
 				$("#comments").append(list_item);
+			  $(".delete").click(function (event) {
+					delete_comment(this);
+			   });
+				comment_count++;
 			}
 
 			add_button_tag = function(tagName) {
@@ -248,7 +271,6 @@
 
 			}
 
-
 			initFilters = function()
 			{
 				// Add filtering options for tags and groups
@@ -265,9 +287,6 @@
 					add_group_tag(artistDefinedGroups[i]);
 				}
 			}
-
-
-
 
 			onClickFilterButton = function(event)
 			{
@@ -320,7 +339,6 @@
 				{
 					$(".userType-artist").style.visibility = "hidden";
 				}
-
 			
 				$('#anotate').hide();
 				var pin_count = 0;
@@ -361,8 +379,8 @@
 				
 				$(".comment.post").click(function(event) {
 					var entry = $(this).data("entry");
-					
-					add_comment($(entry).val());
+					// Not associated with pin
+					add_comment($(entry).val(), -1);
 					$(entry).val('');
 					//$('#anotate').hide();
 				});
@@ -378,7 +396,7 @@
 					
 					add_annotation(pin[0].offsetLeft, pin[0].offsetTop,$(entry).val(),pin_count-1);
 					
-					add_comment($(entry).val());
+					add_comment($(entry).val(), pin_count-1);
 					$(entry).val('');
 					$('#anotate').hide();
 				});

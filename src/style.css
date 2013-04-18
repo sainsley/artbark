@@ -52,6 +52,7 @@
 
 .comment {
 	background-color: white;
+	word-wrap: break-word;
 }
 
 .post {
@@ -67,4 +68,8 @@
 	position: absolute;
 	font-size: 40px;
 	z-index:100;
+}
+
+.delete {
+	float: right;
 }
