@@ -70,10 +70,6 @@
 	z-index:100;
 }
 
-.delete {
-	float: right;
-}
-
-.edit {
+.menu-btn {
 	float: right;
 }

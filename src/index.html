@@ -190,25 +190,60 @@
 			//
 			
 			delete_comment = function(delete_btn) {
-				var comment = '#'+$(delete_btn).data("comment");
+				var comment = '#comment-'+$(delete_btn).data("id");
 				var pin = $(comment).data("pin");
 				// there is a pin
-				if (pinid != -1) {
+				if (pin != -1) {
 					var pinid = '#pin-'+pin;
 					$(pinid).remove();
 				}
 				$(comment).remove();
 			}
 			
-			edit_comment = function(delete_btn) {
-				var comment = '#'+$(delete_btn).data("comment");
+			edit_comment = function(edit_btn) {
+				var comment = '#show-'+$(edit_btn).data("id");
+				var current = $(comment).text();
+				$(comment).hide();
+				var edit = '#edit-'+$(edit_btn).data("id");
+				var entry = '#entry-'+$(edit_btn).data("id");
+				$(entry).val(current);
+				$(edit).show();
+			}
+			
+			save_comment = function(save_btn) {
+				var comment = '#show-'+$(save_btn).data("id");
+				var edit = '#edit-'+$(save_btn).data("id");
+				var entry = '#entry-'+$(save_btn).data("id");
+				var current = $(entry).val();
+				var toolbar = get_tool_panel($(save_btn).data("id")); 
+				//$(comment).text(current);
+				$(comment).show();
+				$(comment).text(current);
+				$(comment).append(toolbar);
+				$(edit).hide();
+				configure_tools();
+				// update pin
+				comment = '#comment-'+$(save_btn).data("id");
 				var pin = $(comment).data("pin");
 				// there is a pin
-				if (pinid != -1) {
-					var pinid = '#pin-'+pin;
-					$(pinid).remove();
+				if (pin != -1) {
+					$('#annotation-'+pin).text(current);
 				}
-				$(comment).remove();
+			}
+			
+			get_tool_panel = function(comment_id) {
+				var edit_button = '<button class="edit menu-btn" data-id="'+comment_id+'"><i class="icon-pencil"></i></button>';
+				var delete_button = '<button class="delete menu-btn" data-id="'+comment_id+'"><i class="icon-remove"></i></button>';
+				return delete_button+edit_button;
+			}
+			
+			configure_tools = function() {
+			  $(".delete").click(function (event) {
+					delete_comment(this);
+			   });
+ 			  $(".edit").click(function (event) {
+ 					edit_comment(this);
+ 			   });
 			}
 			
 			add_comment = function(body, pin_id) {
@@ -216,13 +251,21 @@
 				// also assign pin id to comment if applicable
 				var id_string = '"comment-'+comment_count+'"';
 				var data_pin = 'data-pin="'+pin_id+'"';
-				var edit_button = '<button class="edit" data-comment='+id_string+'><i class="icon-pencil"></i></button>';
-				var delete_button = '<button class="delete" data-comment='+id_string+'><i class="icon-remove"></i></button>';
-				var list_item = '<li class="comment well"'+data_pin+'id='+id_string+'>'+body+delete_button+edit_button+'</li>';
+				// construct show panel
+				var toolbar = get_tool_panel(comment_count); 
+				var show_panel = '<div id="show-'+comment_count+'">'+body+toolbar+'</div>'
+				// construct edit panel
+				var entry_panel = '<input id="entry-'+comment_count+'" type="text"></input>'
+				var save_button = '<button class="save menu-btn" data-id="'+comment_count+'"><i class="icon-ok"></i></button>';
+				var edit_panel = '<div id="edit-'+comment_count+'" style="display: none;">'+entry_panel+save_button+'</div>'
+				
+				var list_item = '<li class="comment well"'+data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
 				$("#comments").append(list_item);
-			  $(".delete").click(function (event) {
-					delete_comment(this);
+			  $(".save").click(function (event) {
+					save_comment(this);
 			   });
+				 
+				configure_tools();
 				comment_count++;
 			}
 
@@ -465,13 +508,13 @@
 				
 				add_annotation = function(x,y, body, pin_id_num) {
 					
-					var annotationBox = "<div id='comment-" + pin_id_num + "' class='comment well'>"+body+"</div>";
+					var annotationBox = "<div id='annotation-" + pin_id_num + "' class='comment well'>"+body+"</div>";
 					$('#pin-' + pin_id_num).append(annotationBox);
 					console.log("appending to pin");
 					//console.log($("#pin-"+pin_id_num));
 					
 					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					$("#comment-"+pin_id_num)[0].style.display = 'none';
+					$("#annotation-"+pin_id_num)[0].style.display = 'none';
 					
 				}
 				
