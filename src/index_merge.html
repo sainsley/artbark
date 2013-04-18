@@ -76,13 +76,13 @@
 							<div class="arrow"></div>
 							<h3 class="popover-title">Annotate this work</h3>
 							<div class="popover-content">
-								<div class="annotation insertTags">
-									Tag:
-								</div>
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
+								<div class="annotation insertTags">
+
+								</div>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
 							</div>
-							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none; opacity:0.9;"></i>
+							<i id='temp-pin' class='icon-map-marker pin' style="color: #ebebeb; display: none"></i>
 						</div>
           </div>
         </div><!--/span-->
@@ -90,18 +90,18 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
-				<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
-				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
-				<li class="comment well tag-pastoral group-mentors userType-artist">Looks very #pastoral to me -- your mentor.</li>
+				<li class="comment well tag-happy group-friends">Test comment with tag happy and group friends</li>
+				<li class="comment well tag-sad group-mentors">Test comment with tag sad and group mentors</li>
+				<li class="comment well tag-pastoral group-mentors">Test comment with tag pastoral and group mentors</li>
             </ul>
-						<div class="comment insertTags userType-commenter" style="	margin-left: 15px;">
-							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
+						<div class="span1"></div>
+						<textarea id="main-entry" class="comment-box span10" rows="5"></textarea>
+						<div class="span1"></div>
+						<div class="comment insertTags">
+
 						</div>
-						<textarea id="main-entry" class="comment-box userType-commenter" rows="5"></textarea>
-						<div>
-							<button class="comment post btn btn-info userType-commenter" data-entry="#main-entry">Post</button>
-						</div>
-					</div><!--/.well -->
+						<button class="comment post btn btn-info span10" style="margin-left: 0;" data-entry="#main-entry">Post</button>
+          </div><!--/.well -->
 
 			<div id="tags-holder" class="well sidebar-nav userType-artist">
 				<h3 class="nav-header" style="font-size: 16px;">Filter by tag</h3>
@@ -251,19 +251,6 @@
  			   });
 			}
 			
-			link_annotations = function() {
-				$(".comment-pin").mouseover(function() {
-					var pin = $(this).data("pin");
-					var pinid = '#pin-'+pin;
-					$(pinid).css('opacity', 1.0); 
-					});
-				$(".comment-pin").mouseout(function() {
-					var pin = $(this).data("pin");
-					var pinid = '#pin-'+pin;
-					$(pinid).css('opacity', 0.7); 
-					});
-			}
-			
 			add_comment = function(body, pin_id) {
 				// assign id to comment and make data entry for delete_button
 				// also assign pin id to comment if applicable
@@ -293,11 +280,8 @@
 				});
 
 				console.log(tags);
-				var comment_class = '"comment well';
-				if (pin_id > -1) {
-					comment_class += ' comment-pin';
-				}
-				var list_item = '<li class='+comment_class;
+
+				var list_item = '<li class="comment well';
 
 				for(var i=0;i<tags.length;i++)
 				{
@@ -314,7 +298,6 @@
 			   });
 				 
 				configure_tools();
-				link_annotations();
 				comment_count++;
 			}
 
@@ -326,7 +309,7 @@
 				$("#"+tagId)[0].addEventListener("click",onClickFilterButton,false);
 				$("#"+tagId)[0].className += " active";
 
-				var newInsertTagButton = '<button type="button" class="well btn-insert-tag">#' + tagName + '</button>';
+				var newInsertTagButton = '<button type="button" class="btn btn-primary btn-insert-tag">#' + tagName + '</button>';
 
 /*()				for(var i=0;i<$(".insertTags").length;i++)
 				{
@@ -361,7 +344,7 @@
 				 		for (var i=0;i<$("."+key).length;i++)
 				 		{
 				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.display = "none";
+				 			$("."+key)[i].style.visibility = "hidden";
 				 		}
 				 	}
 
@@ -375,7 +358,7 @@
 				 		for (var i=0;i<$("."+key).length;i++)
 				 		{
 				 			console.log($("."+key)[i]);
-				 			$("."+key)[i].style.display = "block";
+				 			$("."+key)[i].style.visibility = "visible";
 				 		}
 				 		
 				 	}
@@ -445,7 +428,7 @@
 					{
 						for(var i=0;i<$(".userType-commenter").length;i++)
 						{
-							$(".userType-commenter")[i].style.display = "none";
+							$(".userType-commenter")[i].style.visibility = "hidden";
 						}
 					}
 				}	
@@ -455,7 +438,7 @@
 					{
 						for(var i=0;i<$(".userType-artist").length;i++)
 						{
-							$(".userType-artist")[i].style.display = "none";
+							$(".userType-artist")[i].style.visibility = "hidden";
 						}
 					}
 				}
@@ -465,19 +448,7 @@
 				//
 				// Ratings feedback
 				//
-				// harcode for artist
-				if(userType=='artist') {
-					for (var id = 0; id < 4; id++) {
-						var rollover = "graphics/star-fill.png"
-						$("#star-"+id).attr("src", rollover);
-						$("#star-"+id).css("opacity", 1.0);
-					}
-				}
-				
 				$(".star").mouseover(function(event) {
-					if(userType=='artist') {
-						return;
-					}
 					var id = $(this).data("idx");
 					var rollover = "graphics/star-fill.png"
 					for (var i = 1; i <= id; ++i) {
@@ -486,9 +457,6 @@
 				});
 				
 				$(".star").mouseout(function(event) {
-					if(userType=='artist') {
-						return;
-					}
 					var id = $(this).data("idx");
 					var original = "graphics/star.png"
 					for (var i = 1; i <= id; ++i) {
@@ -499,9 +467,6 @@
 				});
 				
 				$(".star").click(function(event) {
-					if(userType=='artist') {
-						return;
-					}
 					var id = $(this).data("idx");
 					var filled = "graphics/star-fill.png"
 					var empty = "graphics/star.png"
@@ -543,10 +508,6 @@
 				});
 				
 				$("#art").click(function(event) {
-					if(userType=='artist') {
-						return;
-					}
-					
 					if(expandedAnnotation!=null) {
 						expandedAnnotation[0].children[0].style.display = 'none';
 					}
