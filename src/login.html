@@ -1,0 +1,150 @@
+<link href='http://fonts.googleapis.com/css?family=Cabin+Sketch' rel='stylesheet' type='text/css'>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ArtBark: Login</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="external_js/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style type="text/css">
+      /* Override some defaults */
+
+      body {
+        padding-top: 100px; 
+      }
+
+
+      /* The white background content wrapper */
+      .content {
+       
+        padding: 20px;
+        margin: 0 -20px; 
+        -webkit-border-radius: 10px 10px 10px 10px;
+           -moz-border-radius: 10px 10px 10px 10px;
+                border-radius: 10px 10px 10px 10px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      }
+
+    .login-form {
+    margin-left: 65px;
+    }
+    </style>
+
+</head>
+<body>
+  <div class="navbar navbar-inverse navbar-fixed-top">
+		  <div class="navbar-inner">
+			<div class="container-fluid">
+	  <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
+	</div>
+	</div>
+</div>
+  <div class="container">
+    <div class="content hero-unit">
+      <div class="row">
+        <div class="login-form">
+          <h2>Login</h2>
+          <form action="">
+            <fieldset>
+              <div class="clearfix">
+                <input id="inputLoginEmail" type="text" placeholder="Email address">
+              </div>
+              <div class="clearfix">
+                <input id="inputLoginSessionId" type="text" placeholder="Session ID">
+              </div>
+              <button class="btn btn-primary" type="submit">Sign in</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+ 
+	
+	<div>
+	<br/>
+	<h2>or</h2>
+	<br/>
+	</div>
+	
+
+    <div class="content hero-unit">
+      <div class="row">
+        <div class="login-form">
+          <h2>I want to upload art</h2>
+          <form action="">
+            <fieldset>
+              <div class="clearfix">
+                <input type="text" placeholder="Email address">
+              </div>
+              <button class="btn btn-primary" type="submit">Get started</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> <!-- /container -->
+    <script src="external_js/jquery.js"></script>
+	
+    <script src="external_js/bootstrap/js/bootstrap.js"></script>
+	<script>
+		$.extend({
+				getUrlVars : function() {
+					var vars = [], hash;
+					var hashes = window.location.href.slice(
+							window.location.href.indexOf('?') + 1).split('&');
+					for ( var i = 0; i < hashes.length; i++) {
+						hash = hashes[i].split('=');
+						vars.push(hash[0]);
+						vars[hash[0]] = hash[1];
+					}
+					return vars;
+				},
+				getUrlVar : function(name) {
+					return $.getUrlVars()[name];
+				}
+			});
+			
+			var userEmail;
+			var sessionId;
+			
+			function getSettingsFromUrl(){
+				if($.getUrlVar('userEmail')) 
+				{
+					userEmail = $.getUrlVar('userEmail');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+
+				if($.getUrlVar('sessionId')) 
+				{
+					sessionId = $.getUrlVar('sessionId');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+				
+			};
+			
+			$(document).ready(function() {
+				getSettingsFromUrl();
+				
+				if(userEmail != null)
+				{
+					$("#inputLoginEmail")[0].value = userEmail;
+				}
+				
+				if(sessionId != null)
+				{
+				$("#inputLoginSessionId")[0].value = sessionId;
+				}
+				
+			});
+	</script>
+</body>
+</html>
