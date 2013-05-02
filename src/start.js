@@ -1,16 +1,31 @@
+var cancelled
+
 $(init)
 
 function init(){
 	console.log('start page')
 	
-	$('#hidden-upload').click(function(e){ $('#art-file').click() })
+	$('#hidden-upload').click($('#art-file').click)
+	$('#cancel-btn').click(onCancel)
 	
 	$('#art-file').fileupload({
 		dropZone: $(document),
-		start: addProgressBar,
+		start: onUploadStart,
 		done: function(e, data){ throw 'unhandled successful upload' },
-		fail: function(e, data){ window.location = 'settings.html' }
+		fail: function(e, data){ if(!cancelled) window.location = 'settings.html' }
 	})
+}
+
+function onUploadStart(e){
+	addProgressBar()
+	$('#cancel-btn').removeClass('disabled')
+	cancelled = false
+}
+
+function onCancel(e){
+	removeProgressBar()
+	$('#cancel-btn').addClass('disabled')
+	cancelled = true
 }
 
 function addProgressBar(){
