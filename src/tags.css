@@ -1,9 +1,9 @@
-.tag {
+.x-tag {
 	margin-bottom: 1em;
 	background-color: #67a3aa;
 	border-radius: 0.2em;
 }
 
-.tag i {
+.x-tag i {
 	float: right;
 }

@@ -25,16 +25,14 @@ function inputTag(e){
 	$('#tags').val('')
 	if(tags.indexOf(text) != -1) return
 	
+	// preprocess tags to remove '#'
+	text = text.split('#').join('')
 	
 	tags.push(text)
 	
-	var tag = $('<div />', {
-		class: 'tag',
-		text: text
-	})
-	
 	var closeBtn = $('<span />', {
-		class: 'btn btn-danger'
+		class: 'btn btn-action',
+		text: text
 	})
 	
 	var closeIcon = $('<i />', {
@@ -42,11 +40,10 @@ function inputTag(e){
 	})
 	
 	closeBtn.append(closeIcon)
-	tag.append(closeBtn)
 	
 	closeBtn.click(onCloseTag)
 	
-	$('#tag-list').append(tag)
+	$('#tag-list').append(closeBtn)
 }
 
 function onSubmit(){
