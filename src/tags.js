@@ -28,19 +28,29 @@ function inputTag(e){
 	// preprocess tags to remove '#'
 	text = text.split('#').join('')
 	
-	tags.push(text)
+	// multitag support
+	text = text.split(/\s+/)
 	
-	var closeBtn = $('<span />', {
-		class: 'btn btn-action',
-		text: text
+	tags.push.apply(tags, text)
+	$.each(text, function(i, e){ addTagElement(e) })
+}
+
+function addTagElement(text){
+	var closeBtn = $('<div />', {
+		class: 'btn btn-action tag-btn',
 	})
 	
 	var closeIcon = $('<i />', {
 		class: 'icon-remove'
 	})
 	
-	closeBtn.append(closeIcon)
+	var closeText = $('<span />', {
+		class: 'tag-text',
+		text: text
+	})
 	
+	closeBtn.append(closeText)
+	closeBtn.append(closeIcon)
 	closeBtn.click(onCloseTag)
 	
 	$('#tag-list').append(closeBtn)
@@ -51,14 +61,15 @@ function onSubmit(){
 }
 
 function onCloseTag(e){
-	var tagName = $(this).parent().text()
+	console.log($(this).children())
+	var tagName = $(this).children('.tag-text').text()
 	removeTag(tagName)
 }
 
 function removeTag(name){
 	$('#tag-list').children().each(function(i, e){ 
 		var $e = $(e)
-		if($e.text() == name){
+		if($e.children('.tag-text').text() == name){
 			$e.remove()
 		}
 	})

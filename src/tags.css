@@ -7,3 +7,11 @@
 .x-tag i {
 	float: right;
 }
+
+.tag-btn {
+	margin-right: 15px;
+}
+
+.tag-text {
+	margin-right: 5px;
+}
