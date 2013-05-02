@@ -45,6 +45,13 @@
 	padding: 0px 10px;
 }
 
+.container
+{
+	width: 40%;
+
+}
+
+
 .comment-box {
 	width: 94%;
 	margin-left: 15px;
