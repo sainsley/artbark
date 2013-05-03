@@ -667,7 +667,7 @@
 				
 				add_annotation = function(x,y, body, pin_id_num) {
 					
-					var annotationBox = "<div id='annotation-" + pin_id_num + "' class='comment well'>"+body+"</div>";
+					var annotationBox = "<div style='position: absolute' id='annotation-" + pin_id_num + "' class='comment well'>"+body+"</div>";
 					$('#pin-' + pin_id_num).append(annotationBox);
 					console.log("appending to pin");
 					//console.log($("#pin-"+pin_id_num));
