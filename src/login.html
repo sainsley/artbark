@@ -183,7 +183,7 @@
         
           console.log(userEmail.length)
           console.log("trying to navigate")
-          if(userEmail.length > 0 && sessionId.length > 0)
+          if(userEmail.length > 0)
           {
             console.log("navigating...");
             window.location.href = "start.html?&userEmail="+userEmail;
@@ -191,12 +191,19 @@
         }
 
         $("#btnGetStarted").click(function(){
-          signIn();
+          getStarted();
         });
 
+
+$('#inputGetStartedEmail').keydown(function(event){
+    if(event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
         $("#inputGetStartedEmail").keyup(function (e) {
           if (e.keyCode == 13) {
-              signIn();
+              getStarted();
           }
         });
 
