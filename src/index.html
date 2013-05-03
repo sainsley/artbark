@@ -629,16 +629,19 @@
 				
 				function onMouseEnterAnnotation(event)
 				{
-					// TODO(amy): highlight annotation icon on mouseover 
-					//console.log("Highlighted annotation");
+	
+					$(this)[0].children[0].style.display = 'block';
+					$(this).css('opacity', 1.0); 
+					
 				}
 				
 				function onMouseLeaveAnnotation(event)
 				{
-					//selectedAnnotation = null;
-					console.log("No selected annotation");
-					//$(this).width(iconWidth*1.2);
-					//$(this).css('width','120%');
+					if (!$(this).hasClass("preserve")) {
+						$(this)[0].children[0].style.display = 'none';
+						$(this).css('opacity', 0.7);
+					}
+					
 				}
 				
 				add_pin = function() {
@@ -662,15 +665,6 @@
 					pin_count++;
 				}
 				
-				function handleDragStart ( event, ui ) {
-					//$(this).draggable('option', 'revert', true );
-					//$(this).zIndex( 10 );
-				}
-		
-				function handleDragEnd ( event, ui ) {
-					//$(this).zIndex( 0 );
-				}
-				
 				add_annotation = function(x,y, body, pin_id_num) {
 					
 					var annotationBox = "<div id='annotation-" + pin_id_num + "' class='comment well'>"+body+"</div>";
@@ -683,18 +677,14 @@
 					
 				}
 				
+				
 				function onClickAnnotation(event)
 				{
-					//console.log($(this));
-					//$(this).css('width','120%');
-					//$('#anotate').show();
-					//var offset = $('#anotate').height()/2;
-					expandedAnnotation = $(this);
-					if($(this)[0].children[0].style.display != 'none') {
-						$(this)[0].children[0].style.display = 'none';
-						return;
+					if (!$(this).hasClass("preserve")) {
+						$(this).addClass("preserve")
+					} else {
+						$(this).removeClass("preserve")
 					}
-					$(this)[0].children[0].style.display = 'block';
 					//$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
 				}
 				
