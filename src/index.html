@@ -138,7 +138,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="external_js/jquery.js"></script>
-	<script src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
 		<script>
 			// for keeping track of temp pen cursor 
@@ -643,17 +643,32 @@
 				
 				add_pin = function() {
 					var pin_id = "pin-"+pin_count;
-					var pin = "<i id='"+pin_id+"' class='icon-map-marker pin'></i>";
+					var pin = $("<i id='"+pin_id+"' class='icon-map-marker pin'></i>");
+					pin.appendTo('#image-holder');
 					//addEvent(link, 'click', function () {alert('Hi'); });
 					//$('body').append(pin);
-					$('#image-holder').append(pin);
-					$('#'+pin_id).offset({ top: pinY, left: pinX});
+					//$('#image-holder').append(pin);
+					pin.offset({ top: pinY, left: pinX});
+					console.log($('#'+pin_id)+" "+pin[0]);
+					pin.draggable({
+						cursor: 'move',
+						containment: '#art'
+					})
 					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
-					$('#'+pin_id)[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
-					$('#'+pin_id)[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
-					$('#'+pin_id)[0].addEventListener("click", onClickAnnotation, false);
+					pin[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
+					pin[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
+					pin[0].addEventListener("click", onClickAnnotation, false);
 					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
+				}
+				
+				function handleDragStart ( event, ui ) {
+					//$(this).draggable('option', 'revert', true );
+					//$(this).zIndex( 10 );
+				}
+		
+				function handleDragEnd ( event, ui ) {
+					//$(this).zIndex( 0 );
 				}
 				
 				add_annotation = function(x,y, body, pin_id_num) {
