@@ -45,9 +45,11 @@
           </button>
           <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
           <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Yourself</a>
+            <p id="welcomeMsg" class="navbar-text pull-right" style="line-height:1.2; text-align:right; padding-top:4px">
+               Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a><br />
+               Session ID: <a id="linkSession" href="login.html" class="navbar-link">N/A</a>
             </p>
+            
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -179,11 +181,31 @@
 					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
 					
 				}
+
+				if($.getUrlVar('userEmail')) 
+				{
+					userEmail = $.getUrlVar('userEmail');
+					$("#linkUserEmail")[0].innerHTML = userEmail;
+
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+
+				if($.getUrlVar('sessionId')) 
+				{
+					sessionId = $.getUrlVar('sessionId');
+					$("#linkSession")[0].innerHTML = sessionId;
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
 			};
 			
 			var artistDefinedTags = new Array("happy","pastoral","sad");
 			var artistDefinedGroups = new Array("Mentors","Friends");
 			var userType = "artist";
+
+			var userEmail;
+			var sessionId;
 
 			var filters = new Object();
 			

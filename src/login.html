@@ -59,7 +59,7 @@
               <div class="clearfix">
                 <input id="inputLoginSessionId" type="text" placeholder="Session ID">
               </div>
-              <button class="btn btn-primary" type="submit">Sign in</button>
+              <button id="btnSignIn" class="btn btn-primary" type="button">Sign in</button>
             </fieldset>
           </form>
         </div>
@@ -81,9 +81,9 @@
           <form action="">
             <fieldset>
               <div class="clearfix">
-                <input type="text" placeholder="Email address">
+                <input id="inputGetStartedEmail" type="text" placeholder="Email address">
               </div>
-              <button class="btn btn-primary" type="submit">Get started</button>
+              <button id="btnGetStarted" class="btn btn-primary" type="button">Get started</button>
             </fieldset>
           </form>
         </div>
@@ -128,21 +128,78 @@
 					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
 					
 				}
+
+
+        if(userEmail != null)
+        {
+          $("#inputLoginEmail")[0].value = userEmail;
+        }
+        
+        if(sessionId != null)
+        {
+        $("#inputLoginSessionId")[0].value = sessionId;
+        }
 				
 			};
 			
 			$(document).ready(function() {
 				getSettingsFromUrl();
-				
-				if(userEmail != null)
-				{
-					$("#inputLoginEmail")[0].value = userEmail;
-				}
-				
-				if(sessionId != null)
-				{
-				$("#inputLoginSessionId")[0].value = sessionId;
-				}
+        $('.nav-tabs').button();
+
+
+        signIn = function()
+        {
+                    userEmail = $("#inputLoginEmail")[0].value ;
+          sessionId = $("#inputLoginSessionId")[0].value;
+          console.log(userEmail.length)
+          console.log("trying to navigate")
+          if(userEmail.length > 0 && sessionId.length > 0)
+          {
+            console.log("navigating...");
+            window.location.href = "index.html?sessionId="+sessionId+"&userEmail="+userEmail;
+          }
+        }
+
+        $("#btnSignIn").click(function(){
+          signIn();
+        });
+
+        $("#inputLoginEmail").keyup(function (e) {
+          if (e.keyCode == 13) {
+              signIn();
+          }
+        });
+
+        $("#inputLoginSessionId").keyup(function (e) {
+          if (e.keyCode == 13) {
+              signIn();
+          }
+        });
+
+
+        getStarted = function()
+        {
+                   userEmail = $("#inputGetStartedEmail")[0].value ;
+        
+          console.log(userEmail.length)
+          console.log("trying to navigate")
+          if(userEmail.length > 0 && sessionId.length > 0)
+          {
+            console.log("navigating...");
+            window.location.href = "start.html?&userEmail="+userEmail;
+          }
+        }
+
+        $("#btnGetStarted").click(function(){
+          signIn();
+        });
+
+        $("#inputGetStartedEmail").keyup(function (e) {
+          if (e.keyCode == 13) {
+              signIn();
+          }
+        });
+
 				
 			});
 	</script>
