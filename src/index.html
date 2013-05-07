@@ -821,6 +821,11 @@
 						add_comment(entry, pin_count-1);
 						$('#anotate').hide();
 					}	
+					// hide crosshair on art for artists
+					if(userType=='artist') {
+						$("#art").css('cursor', 'auto');
+					}
+					
 				}
 		 	});
 		</script>
