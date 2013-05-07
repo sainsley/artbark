@@ -74,6 +74,7 @@
 						</div>
             <img id="art" src="graphics/warhol.jpg"></img>
 			<!--<div class="btn-magnify"><button id="btn-magnify" type="button" class="btn btn-primary" data-toggle="button"><i id="icon-magnify" class="icon-zoom-in"></i></button></div> -->
+						<textarea style='position: absolute; display: none; resize: none;' id='edit-annotation-entry'  class='comment well'></textarea>
 						<div id="anotate" class="popover fade right in" style="display: block;">
 							<div class="arrow"></div>
 							<h3 class="popover-title">Annotate this work<button class="btn btn-large close-annotation close"><i class="icon-remove-circle"></i></button></h3>
@@ -143,6 +144,7 @@
 		<script>
 			// for keeping track of temp pen cursor 
 			var pinX, pinY;
+			var current_annotation;
 		
 			$.extend({
 				getUrlVars : function() {
@@ -221,6 +223,8 @@
 				// there is a pin
 				if (pin != -1) {
 					pin_icon = "<i class='icon-map-marker pin-comment' style='margin-right: 10px'></i>";
+					// add comment id
+					$('#annotation-'+pin).data('comment-id', id);
 				}
 				$(comment).prepend(pin_icon);
 			 	// make comment pin draggable
@@ -256,25 +260,37 @@
 			}
 			
 			save_comment = function(save_btn) {
-				var comment = '#show-'+$(save_btn).data("id");
 				var edit = '#edit-'+$(save_btn).data("id");
 				var entry = '#entry-'+$(save_btn).data("id");
 				var current = $(entry).val();
-				var toolbar = get_tool_panel($(save_btn).data("id")); 
 				//$(comment).text(current);
-				$(comment).show();
-				$(comment).text(current);
-				$(comment).append(toolbar);
+				var id = $(save_btn).data("id");
+				update_comment(id, current);
 				$(edit).hide();
+			}
+			
+			update_comment = function(id, text) {
+				var comment = '#show-'+id;
+				var toolbar = get_tool_panel(id); 
+				$(comment).show();
+				$(comment).text(text);
+				$(comment).append(toolbar);
 				configure_tools();
 				// update pin
-				var id = $(save_btn).data("id");
 				var pin = $('#comment-'+id).data("pin");
 				// there is a pin
 				if (pin != -1) {
-					$('#annotation-'+pin).text(current);
+					$('#annotation-'+pin).text(text);
 				}
 				add_comment_pin(pin, comment, id);
+			}
+			
+			update_current_annotation = function(text) {
+				var id = current_annotation.data("comment-id");
+				current_annotation.text(text);
+				update_comment(id, text);
+				current_annotation.show();
+				$("#edit-annotation-entry").hide();
 			}
 			
 			get_tool_panel = function(comment_id) {
@@ -361,8 +377,6 @@
 				} else {
 					list_item += '" ' +  data_pin+'id='+id_string+' data-id="'+comment_count+'">'+show_panel+edit_panel+'</li>';
 				}
-				//list_item += '">'+body+'</li>';
-				console.log(list_item);
 
 				$("#comments").append(list_item);
 			  $(".save").click(function (event) {
@@ -504,6 +518,12 @@
 			});*/
 			
 		 	$(document).ready(function() {
+				$("#edit-annotation-entry").keypress(function(event) {
+				  if ( event.which == 13 || event.keyCode == 13 ) {
+						console.log("ENTER: "+$(this).val());
+				    update_current_annotation($(this).val());
+				  }
+				});
 				// art handles pin drops
 				$("#art").droppable( {
 					hoverClass: 'droppable',
@@ -685,6 +705,7 @@
 				function onMouseEnterAnnotation(event)
 				{
 	
+					if ($("#edit-annotation-entry").is(":visible")) return;
 					$(this)[0].children[0].style.display = 'block';
 					$(this).css('opacity', 1.0); 
 					
@@ -692,6 +713,7 @@
 				
 				function onMouseLeaveAnnotation(event)
 				{
+					if ($("#edit-annotation-entry").is(":visible")) return;
 					if (!$(this).hasClass("preserve")) {
 						$(this)[0].children[0].style.display = 'none';
 						$(this).css('opacity', 0.7);
@@ -715,7 +737,7 @@
 					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					pin[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
 					pin[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
-					pin[0].addEventListener("click", onClickAnnotation, false);
+					
 					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
 				}
@@ -729,18 +751,31 @@
 					
 					//$("#comment-"+pin_id_num).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					$("#annotation-"+pin_id_num)[0].style.display = 'none';
-					
+					$("#annotation-"+pin_id_num)[0].addEventListener("click", onClickAnnotation, false);
 				}
-				
 				
 				function onClickAnnotation(event)
 				{
-					if (!$(this).hasClass("preserve")) {
+
+					/*if (!$(this).hasClass("preserve")) {
 						$(this).addClass("preserve")
 					} else {
 						$(this).removeClass("preserve")
-					}
+					}*/
 					//$('#anotate').offset({ top: event.pageY-offset, left: event.pageX+6});
+					current_annotation = $(this);
+					console.log($(this));
+					var entry = $("#edit-annotation-entry");
+					entry.offset($(this).offset());
+					entry.width($(this).width());
+					entry.height($(this).height());
+					entry.show();
+					entry.val($(this).text());
+					console.log("EDIT")
+					$(this).hide();
+					entry.focus();
+					var caretPos = $(this).text().length
+					entry[0].setSelectionRange(caretPos, caretPos);
 				}
 				
 				// harcode for artist
