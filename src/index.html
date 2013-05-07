@@ -758,7 +758,7 @@
 				
 				function onClickAnnotation(event)
 				{
-
+					if(userType=='artist') { return; }
 					/*if (!$(this).hasClass("preserve")) {
 						$(this).addClass("preserve")
 					} else {
