@@ -739,7 +739,9 @@
 					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					pin[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
 					pin[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
-					
+					if (userType != 'artist') {
+						pin.css('cursor', 'move');
+					}
 					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
 				}
