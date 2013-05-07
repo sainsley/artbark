@@ -26,6 +26,10 @@
 	text-align: center;
 }
 
+.close-annotation {
+	float: right;
+}
+
 .star {
 	height: 80px;
 	width: 80px;

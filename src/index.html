@@ -76,7 +76,7 @@
 			<!--<div class="btn-magnify"><button id="btn-magnify" type="button" class="btn btn-primary" data-toggle="button"><i id="icon-magnify" class="icon-zoom-in"></i></button></div> -->
 						<div id="anotate" class="popover fade right in" style="display: block;">
 							<div class="arrow"></div>
-							<h3 class="popover-title">Annotate this work</h3>
+							<h3 class="popover-title">Annotate this work<button class="btn btn-large close-annotation close"><i class="icon-remove-circle"></i></button></h3>
 							<div class="popover-content">
 								<div class="annotation insertTags">
 									Tag:
@@ -586,6 +586,11 @@
 					}
 				});
 				
+				$(".close-annotation").click(function(event) { 
+			 		$('#anotate').hide();
+					$("#annotation-entry").val('');
+			 	});
+				
 				$("#art").click(function(event) {
 					if(userType=='artist') {
 						return;
@@ -604,10 +609,7 @@
 					$('#temp-pin').position({ top: 0, left: 0});
 					$('#temp-pin').offset({ top: pinY, left: pinX});
 
-					
-					// TODO(sainsley): Hide pin on cancel
 				});
-
 
 				$(".btn-insert-tag").click(function(event)
 				{
