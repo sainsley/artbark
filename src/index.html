@@ -216,6 +216,24 @@
 			var comment_count = 0;
 			
 			
+			add_comment_pin = function(pin, comment, id) {
+				var pin_icon = "<i class='icon-map-marker pin-comment-unselected' id='unpinned-"+id+"' data-id='"+id+"' style='margin-right: 10px'></i>";
+				// there is a pin
+				if (pin != -1) {
+					pin_icon = "<i class='icon-map-marker pin-comment' style='margin-right: 10px'></i>";
+				}
+				$(comment).prepend(pin_icon);
+			 	// make comment pin draggable
+				if (pin == -1) {
+					// make draggable if no pin exists
+					var pin_obj = $("#unpinned-"+id);
+					console.log(pin_obj);
+					pin_obj.draggable({
+						revert : true
+					});
+				}
+			}
+			
 			delete_comment = function(delete_btn) {
 				var comment = '#comment-'+$(delete_btn).data("id");
 				var pin = $(comment).data("pin");
@@ -250,17 +268,18 @@
 				$(edit).hide();
 				configure_tools();
 				// update pin
-				comment = '#comment-'+$(save_btn).data("id");
-				var pin = $(comment).data("pin");
+				var id = $(save_btn).data("id");
+				var pin = $('#comment-'+id).data("pin");
 				// there is a pin
 				if (pin != -1) {
 					$('#annotation-'+pin).text(current);
 				}
+				add_comment_pin(pin, comment, id);
 			}
 			
 			get_tool_panel = function(comment_id) {
-				var edit_button = '<button class="edit menu-btn" data-id="'+comment_id+'"><i class="icon-pencil"></i></button>';
-				var delete_button = '<button class="delete menu-btn" data-id="'+comment_id+'"><i class="icon-remove"></i></button>';
+				var edit_button = '<button class="edit menu-btn close" data-id="'+comment_id+'"><i class="icon-pencil"></i></button>';
+				var delete_button = '<button class="delete menu-btn close" data-id="'+comment_id+'"><i class="icon-remove"></i></button>';
 				return delete_button+edit_button;
 			}
 			
@@ -296,7 +315,7 @@
 				var show_panel = '<div id="show-'+comment_count+'">'+body+toolbar+'</div>'
 				// construct edit panel
 				var entry_panel = '<input id="entry-'+comment_count+'" type="text"></input>'
-				var save_button = '<button class="save menu-btn" data-id="'+comment_count+'"><i class="icon-ok"></i></button>';
+				var save_button = '<button class="save menu-btn close" data-id="'+comment_count+'"><i class="icon-ok"></i></button>';
 				var edit_panel = '<div id="edit-'+comment_count+'" style="display: none;">'+entry_panel+save_button+'</div>'
 				
 				var tags = new Array;
@@ -349,7 +368,8 @@
 			  $(".save").click(function (event) {
 					save_comment(this);
 			   });
-				 
+				
+				add_comment_pin(pin_id, "#show-"+comment_count, comment_count);
 				configure_tools();
 				link_annotations();
 				comment_count++;
@@ -477,7 +497,6 @@
 				console.log(filters);
 				applyfilters();
 			}
-
 			
 			/*
 			$("#btn-magnify").click(function(event) {
@@ -485,6 +504,12 @@
 			});*/
 			
 		 	$(document).ready(function() {
+				// art handles pin drops
+				$("#art").droppable( {
+					hoverClass: 'droppable',
+					drop: handlePinDrop
+				} );
+				
 				$('.nav-tabs').button();
 				getSettingsFromUrl();
 				initFilters();
@@ -513,7 +538,35 @@
 				}
 			
 				$('#anotate').hide();
+				
 				var pin_count = 0;
+				// drag-to-convert
+				function convertComment(id, x, y) {
+					pinX = x-25/2;
+					pinY = y-30;
+					// add pin
+					add_pin();
+					var comment = $('#comment-'+id);
+					comment.addClass("comment-pin");
+					var pin_id = pin_count-1;
+					comment.data("pin", pin_id);
+					// add annotation
+					var comment_text =  $('#show-'+id).text();
+					add_annotation(pinX, pinY, comment_text, pin_id);
+					add_comment_pin(pin_id, "#show-"+id, id);
+					link_annotations();
+					// add pin indicator
+				}
+			
+				// See if dropped checker is in valid pos
+				function handlePinDrop ( event, ui ) {
+					if (!ui.draggable.data('id')) return;
+					console.log(ui.draggable.data('id')+" "+event.pageX+" "+event.pageY);
+					ui.draggable.draggable( 'option', 'revert', false );
+					convertComment(ui.draggable.data('id'), event.pageX, event.pageY);
+					ui.draggable.remove();
+				}
+				
 				//
 				// Ratings feedback
 				//

@@ -26,6 +26,25 @@
 	text-align: center;
 }
 
+.droppable {
+	opacity: 0.8;
+}
+
+.pin-comment {
+	margin-left: -10px;
+	margin-right: 10px;
+	font-size: 20;
+	color:  #E01B3F;
+}
+
+.pin-comment-unselected {
+	margin-left: -10px;
+	margin-right: 10px;
+	font-size: 20;
+	color: #e3e3e3;
+	cursor: pointer;
+}
+
 .close-annotation {
 	float: right;
 }
