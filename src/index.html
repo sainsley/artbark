@@ -504,6 +504,10 @@
 			});*/
 			
 		 	$(document).ready(function() {
+
+	 			// Disables drag behavior of img so that you can't pick it up
+				$('#art').on('dragstart', function(event) { event.preventDefault(); });
+
 				// art handles pin drops
 				$("#art").droppable( {
 					hoverClass: 'droppable',
