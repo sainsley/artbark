@@ -64,7 +64,8 @@
 								<h2 id="title">"Marilyn Diptych"</h2>
 								<p id="author">Andy</p>
 							</div>
-							<div id="rating" class="span7">
+							<div id="rating" class="span5 offset2">
+								<p id="ratingText"></p>
 								<img id="star-1" class="star" src="graphics/star.png" data-idx="1"></img>
 								<img id="star-2" class="star" src="graphics/star.png" data-idx="2"></img>
 								<img id="star-3" class="star" src="graphics/star.png" data-idx="3"></img>
@@ -516,6 +517,22 @@
 			$("#btn-magnify").click(function(event) {
 				
 			});*/
+
+			avgRating = 3.5;
+			setRatingText = function()
+			{
+				var ratingText;
+				if(userType == "artist")
+				{
+					ratingText = "Average rating: " + String(avgRating);
+				}
+				else
+				{
+					ratingText = "Rate this piece below...";
+				}
+
+				$("#ratingText")[0].innerHTML = ratingText;
+			}
 			
 		 	$(document).ready(function() {
 				$("#edit-annotation-entry").keypress(function(event) {
@@ -535,6 +552,8 @@
 				$('.nav-tabs').button();
 				getSettingsFromUrl();
 				initFilters();
+
+				setRatingText();
 
 				console.log("usertype="+userType);
 				// Ghetto session control
