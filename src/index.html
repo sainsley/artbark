@@ -193,7 +193,37 @@
 						})
 					})
 					console.log("delete comment "+id)
-					transient_delete_comment(id)
+					//transient_delete_comment(id)
+				}
+				
+				edit_comment = function(id, pinid) {
+					var comment = $("#comment-"+id).text();
+					console.log("EDIT comment: "+comment);
+					var type = "comment";
+					var pin_x = -1;
+					var pin_y = -1;
+					if (pinid > -1) {
+						type = "pin";
+						var pin_id = "#pin-"+pinid;
+						pin_x = $(pin_id).offset().left;
+						pin_y = $(pin_id).offset().top;
+					
+					}
+					$.ajax({
+						type: 'POST',
+						dataType: 'text',
+						url: '/comment-edit',
+						data: JSON.stringify({
+							artist: artistEmail,
+							id: id,
+							text: comment,
+							author: userEmail,
+							pin: pinid,
+							pinX: pin_x,
+							pinY: pin_y,
+							type: type
+						})
+					})
 				}
 				
 				transient_add_comment = add_comment
@@ -398,7 +428,7 @@
 				}
 			}
 			
-			edit_comment = function(edit_btn) {
+			begin_edit_comment = function(edit_btn) {
 				var comment = '#show-'+$(edit_btn).data("id");
 				var current = $(comment).text();
 				$(comment).hide();
@@ -416,6 +446,7 @@
 				var id = $(save_btn).data("id");
 				update_comment(id, current);
 				$(edit).hide();
+				edit_comment(id, $('#comment-'+id).data("pin"));
 			}
 			
 			update_comment = function(id, text) {
@@ -440,6 +471,7 @@
 				update_comment(id, text);
 				current_annotation.show();
 				$("#edit-annotation-entry").hide();
+				edit_comment(id, $('#comment-'+id).data("pin"));
 			}
 			
 			get_tool_panel = function(comment_id) {
@@ -454,7 +486,7 @@
 					temp_delete_comment(id);
 			   });
  			  $(".edit").click(function (event) {
- 					edit_comment(this);
+ 					begin_edit_comment(this);
  			   });
 			}
 			
@@ -746,6 +778,7 @@
 					add_annotation(pinX, pinY, comment_text, pin_id);
 					add_pin_icon(pin_id, id);
 					link_annotations();
+					edit_comment(id, pin_id);
 					// add pin indicator
 				}
 			
@@ -902,15 +935,19 @@
 					var pin_id = "pin-"+id;
 					var pin = $("<i id='"+pin_id+"' class='icon-map-marker pin'></i>");
 					pin.appendTo('#image-holder');
+					pin.data('pin-id', id)
 					//addEvent(link, 'click', function () {alert('Hi'); });
 					//$('body').append(pin);
 					//$('#image-holder').append(pin);
 					pin.offset({ top: pin_y, left: pin_x});
 					console.log($('#'+pin_id)+" "+pin[0]);
-					pin.draggable({
-						cursor: 'move',
-						containment: '#art'
-					})
+					if (userType != 'artist') {
+						pin.draggable({
+							cursor: 'move',
+							containment: '#art',
+							stop: updatePin
+						})
+					}
 					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					pin[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
 					pin[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
@@ -919,6 +956,13 @@
 					}
 					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
+				}
+				
+				updatePin = function( event, ui ) {
+					var id = $(this).data('pin-id');
+					var comment_id = $("#annotation-"+id).data("comment-id");
+					console.log("UPDATE "+id+" "+comment_id);
+					edit_comment(comment_id, id);
 				}
 				
 				add_annotation = function(x,y, body, pin_id_num) {

@@ -84,15 +84,19 @@ function onComment(req, res){
 function onCommentEdit(req, res){
 	parseJSON_POST(req, function(json){
 		var user = account(json.artist)
-		
-		$.each(user.comments, function(i, e){ 
-			if(e.text == json.oldText && e.author == json.author){
-				e.text = json.text
+		for(var i in user.comments){
+			var e = user.comments[i]
+			if(e.id == json.id && e.author == json.author){
+				e.text = json.text;
+				e.pin = json.pin;
+				e.pinX = json.pinX;
+				e.pinY = json.pinY;
+				e.type = json.type;
 			}
-		})
-	
+		}	
 		OK(res)
 	})
+	
 }
 
 // deletes a comment
@@ -154,10 +158,9 @@ function onUpload(req, res){
 	
 	form.parse(req, function(err, fields, files){
 		// only care about one image file
-		console.log('any title?', fields.title)
+		
 		var file = files.imageFile
 		var email = fields.userEmail
-		var title = fields.title
 		var user = account(email)
 		
 		if(!file){
@@ -170,8 +173,6 @@ function onUpload(req, res){
 		fs.rename(file.path, process.cwd() + UPLOAD_DIR + '/' + filename)
 		
 		user.artFile = filename
-		
-		if(title && title != '') user.title = title
 		
 		res.writeHead(200, { 'content-type': 'text/plain' })
 		res.end(JSON.stringify({ // this object format is expected by the file upload plugin.  probably won't use it.
@@ -202,7 +203,6 @@ function account(email){
 	var _user = {
 		email: email,
 		artFile: '',
-		title: 'untitled',
 		comments: [],
 		tags: [],
 		groups: { public: [], private: [] }
