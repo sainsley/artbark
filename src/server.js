@@ -71,7 +71,9 @@ function onComment(req, res){
 			author: json.commenter,
 			type: json.type,
 			pin: json.pin,
-			id: json.id
+			id: json.id,
+			pinX: json.pinX,
+			pinY: json.pinY
 		})
 		
 		OK(res)
