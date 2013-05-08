@@ -66,11 +66,12 @@
 							</div>
 							<div id="rating" class="span5 offset2">
 								<p id="ratingText"></p>
-								<img id="star-1" class="star" src="graphics/star.png" data-idx="1"></img>
-								<img id="star-2" class="star" src="graphics/star.png" data-idx="2"></img>
-								<img id="star-3" class="star" src="graphics/star.png" data-idx="3"></img>
-								<img id="star-4" class="star" src="graphics/star.png" data-idx="4"></img>
-								<img id="star-5" class="star" src="graphics/star.png" data-idx="5"></img>
+								
+								<div id="star-container-1" class="starContainer"><img id="star-1" class="star" src="graphics/star.png" data-idx="1"></img></div>
+								<div id="star-container-2" class="starContainer"><img id="star-2" class="star" src="graphics/star.png" data-idx="2"></img></div>
+								<div id="star-container-3" class="starContainer"><img id="star-3" class="star" src="graphics/star.png" data-idx="3"></img></div>
+								<div id="star-container-4" class="starContainer"><img id="star-4" class="star" src="graphics/star.png" data-idx="4"></img></div>
+								<div id="star-container-5" class="starContainer"><img id="star-5" class="star" src="graphics/star.png" data-idx="5"></img></div>
 							</div>
 						</div>
             <img id="art" src="graphics/warhol.jpg"></img>
@@ -518,7 +519,7 @@
 				
 			});*/
 
-			avgRating = 3.5;
+			avgRating = 3.3;
 			setRatingText = function()
 			{
 				var ratingText;
@@ -798,14 +799,25 @@
 					var caretPos = $(this).text().length
 					entry[0].setSelectionRange(caretPos, caretPos);
 				}
+
+
 				
 				// harcode for artist
 				if(userType=='artist') {
-					for (var id = 0; id < 4; id++) {
+					var fullStars = Math.floor(avgRating);
+					console.log("full stars = " + fullStars)
+					var fractionStar = avgRating - fullStars;
+					for (var id = 1; id <= Math.ceil(avgRating); id++) {
 						var rollover = "graphics/star-fill.png"
 						$("#star-"+id).attr("src", rollover);
 						$("#star-"+id).css("opacity", 1.0);
 					}
+
+					var starHider = "<div class='star-hider' style='width:" + 50*(1-fractionStar) +"px'></div>"
+					$("#star-container-"+(fullStars+1)).append(starHider);
+					//$("#star-container-"+(fullStars+1)).css("width",50*fractionStar);
+					
+				
 					// hardcode annotations
 					for (i = 0; i < 4; i++) {
 						var entry = "";
