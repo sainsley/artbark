@@ -154,9 +154,10 @@ function onUpload(req, res){
 	
 	form.parse(req, function(err, fields, files){
 		// only care about one image file
-		
+		console.log('any title?', fields.title)
 		var file = files.imageFile
 		var email = fields.userEmail
+		var title = fields.title
 		var user = account(email)
 		
 		if(!file){
@@ -169,6 +170,8 @@ function onUpload(req, res){
 		fs.rename(file.path, process.cwd() + UPLOAD_DIR + '/' + filename)
 		
 		user.artFile = filename
+		
+		if(title && title != '') user.title = title
 		
 		res.writeHead(200, { 'content-type': 'text/plain' })
 		res.end(JSON.stringify({ // this object format is expected by the file upload plugin.  probably won't use it.
@@ -199,6 +202,7 @@ function account(email){
 	var _user = {
 		email: email,
 		artFile: '',
+		title: 'untitled',
 		comments: [],
 		tags: [],
 		groups: { public: [], private: [] }

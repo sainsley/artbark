@@ -90,36 +90,94 @@
 	<script src="userData.js"></script>
 	<script src="tags.js"></script>
 	<script>
-		var userGroups = ["Mentors","Friends","Colleagues"];
+		var userGroups= new Array();// = ["Mentors","Friends","Colleagues"];
 		var artTitle;
 		var artistEmail;
-		
-		$(document).ready(function() {
-				getUserData(getGroupSettings);
+				$.extend({
+				getUrlVars : function() {
+					var vars = [], hash;
+					var hashes = window.location.href.slice(
+							window.location.href.indexOf('?') + 1).split('&');
+					for ( var i = 0; i < hashes.length; i++) {
+						hash = hashes[i].split('=');
+						vars.push(hash[0]);
+						vars[hash[0]] = hash[1];
+					}
+					return vars;
+				},
+				getUrlVar : function(name) {
+					return $.getUrlVars()[name];
+				}
+			});
 
-				function getGroupSettings(userData){
-					groups = userData[groups]
-					console.log('adding user data about groups', groups)
-					//$.each(tags, function(i, e){ addTagElement(e) })
+		$(document).ready(function() {
+				getUserData(getGroups);
+if($.getUrlVar('artistEmail')) 
+				{
+					artistEmail = $.getUrlVar('artistEmail');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
 				}
 
+				if($.getUrlVar('artTitle')) 
+				{
+					artTitle = $.getUrlVar('artTitle');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+				}
+
+				function getGroups(userData){
+					//groups = userData[groups]
+					//var groups = new Array();
+
+					for (var i=0;i<userData[artistEmail].groups.public.length;i++)
+					{
+						userGroups.push(userData[artistEmail].groups.public[i])
+					}
+
+					for (var i=0;i<userData[artistEmail].groups.private.length;i++)
+					{
+						userGroups.push(userData[artistEmail].groups.private[i])
+					}
+					//groups.push(userData[artistEmail].groups.public);
+					//groups.push(userData[artistEmail].groups.private);
+					console.log('adding user data about groups', userGroups)
+					//$.each(tags, function(i, e){ addTagElement(e) })
+
+
+				
+
+				
 				for (var groupIndex =0; groupIndex< userGroups.length; groupIndex ++)
 				{
-					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span6" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
+					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span9" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
 					console.log(window.location.href)
 					var splitUrl = window.location.href.split('/');
-					splitUrl[splitUrl.length-1] = "login.html?artTitle=" + artTitle + "&artistEmail=" + artistEmail + "&userGroup=" + userGroups[groupIndex];
+					splitUrl[splitUrl.length-1] = "login.html?"
+					if(artTitle!=null)
+					{
+						splitUrl[splitUrl.length-1] += "artTitle=" + artTitle 
+					}
+
+					if(artistEmail!=null)
+					{
+						splitUrl[splitUrl.length-1] += "&artistEmail=" + artistEmail;
+					}
+
+					splitUrl[splitUrl.length-1] += "&userGroup=" + userGroups[groupIndex];
 					var url = splitUrl.join('/');
 					linkHolder += url + '"></div>'
 					$("#linksHolder").append(linkHolder);				
 				}
-
 
 				$(".linkBox").click(function(event){
 					
 					$(this).focus();
 					$(this).select();
 				});
+				}
+
+
+
+				
 
 				
 		});
