@@ -15,7 +15,11 @@ function init(){
 		start: onUploadStart,
 		done: function(e, data){ if(!cancelled) window.location = 'settings.html?userEmail=' + userEmail },
 		fail: function(e, data){ throw 'unhandled failed upload' },
-		formData: [{ name: 'userEmail', value: userEmail }]
+		formData: [{ name: 'userEmail', value: userEmail }, { name: 'title', value: $('#title').val() }]
+	})
+	
+	$('#title').keypress(function(){ 
+		$('#art-file').fileupload('option', 'formData', [{ name: 'userEmail', value: userEmail }, { name: 'title', value: $('#title').val() }])
 	})
 }
 

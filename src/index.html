@@ -162,6 +162,7 @@
 				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
 				
 				$('#author').text('by ' + artistEmail)
+				$('#title').text('"' + data[artistEmail].title + '"')
 				
 				transient_add_comment = add_comment
 				add_comment = function(comment, id){
