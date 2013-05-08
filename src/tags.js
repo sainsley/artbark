@@ -73,9 +73,11 @@ function onSubmit(){
 		url: '/tags',
 		data: JSON.stringify({
 			email: userEmail,
-			tags: tags
+			tags: tags,
+			title: artTitle
 		}),
-		success: function(){ window.location = 'index.html?userEmail=' + userEmail + '&tags=' + tags.join(',') }
+		//success: function(){ window.location = 'index.html?userEmail=' + userEmail + '&tags=' + tags.join(',') }
+		success: function(){ window.location = 'share.html?artistEmail=' + userEmail + "&artTitle=" + artTitle}
 	})
 	
 	return false

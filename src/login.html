@@ -133,13 +133,25 @@
           }
 				}
 
-        if($.getUrlVar('artTitle') && $.getUrlVar('artistEmail')) 
+        if($.getUrlVar('artTitle')) 
         {
           artTitle = $.getUrlVar('artTitle');
-          artistEmail = $.getUrlVar('artistEmail');
-
-          $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup + "</strong> to view " + artTitle + " by " + artistEmail;
         }
+        else
+        {
+          artTitle = "Unknown Art"
+        }
+
+        if($.getUrlVar('artistEmail'))
+        {
+          artistEmail = $.getUrlVar('artistEmail');
+        }
+        else
+        {
+          artistEmail = "Unknown Artist"
+        }
+
+        $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup.substring(0,userGroup.length-1) + "</strong> to view " + artTitle + " by " + artistEmail;
 
 
 
