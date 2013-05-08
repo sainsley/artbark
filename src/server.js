@@ -98,12 +98,15 @@ function onCommentEdit(req, res){
 // deletes a comment
 function onCommentDelete(req, res){
 	parseJSON_POST(req, function(json){
-		$.each(user.comments, function(i, e){ 
-			if(e.text == json.oldText && e.author == json.author){
+		var user = account(json.artist)
+		for(var i in user.comments){
+			var e = user.comments[i]
+			console.log("delete? " + e.id + " " + json.id + " " + e.author +" " + json.author);
+			if(e.id == json.id && e.author == json.author){
+				console.log("DELETE MATCH");
 				delete user.comments[i]
 			}
-		})
-	
+		}	
 		OK(res)
 	})
 }
