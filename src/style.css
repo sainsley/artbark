@@ -157,3 +157,11 @@
 .menu-btn {
 	float: right;
 }
+
+.glow {
+	box-shadow: 0px 0px 5px #E01B3E;
+}
+
+.alert {
+	margin: 0px 10px;
+}
