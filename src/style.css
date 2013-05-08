@@ -82,6 +82,11 @@
 
 }
 
+.linkBox
+{
+	cursor:pointer !important;
+}
+
 .partial-star{
 
 }
