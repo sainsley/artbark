@@ -155,13 +155,14 @@
 			$(function(){ getUserData(initUserData) })
 			
 			function initUserData(data){
-				artistEmail = $.getUrlVar('artistEmail')
+				artistEmail = $.getUrlVar('userEmail')
 				userData = data
 				
 				// show the art the that artist uploaded
 				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
 				
 				$('#author').text('by ' + artistEmail)
+				$('#title').text('"' + data[artistEmail].title + '"')
 				
 				transient_add_comment = add_comment
 				add_comment = function(comment, id){
@@ -183,7 +184,15 @@
 				}
 				
 				transient_add_comment_pin = add_comment_pin
-				add_comment_pin = function(pin, comment, id){
+				add_comment_pin = function(pin, id){
+					if (pin == -1) {
+						return;
+					}
+					var comment_text = $("#show-"+pin).text();
+					var pin_id = "#pin-"+pin;
+					var pin_x = $(pin_id).offset().left;
+					var pin_y = $(pin_id).offset().top;
+					console.log("PIN XY "+pin_x+" "+pin_y)
 					$.ajax({
 						type: 'POST',
 						dataType: 'text',
@@ -192,13 +201,15 @@
 							type: 'pin',
 							artist: artistEmail,
 							commenter: userEmail,
-							comment_text: comment,
+							comment_text: comment_text,
 							pin: pin,
+							pinX: pin_x,
+							pinY: pin_y,
 							id: id
 						})
 					})
 					
-					transient_add_comment_pin(pin, comment, id)
+					transient_add_comment_pin(pin, id)
 				}
 				
 				// transient definitions are just for things that happen on the page.  non-transient functions send 
@@ -212,7 +223,14 @@
 					if(comment.type == 'comment'){
 						transient_add_comment(comment.text + ' -- ' + comment.author, -1)
 					} else if(comment.type == 'pin'){
-						transient_add_comment_pin(comment.pin, comment.text + ' -- ' + comment.author, -1)
+						if (comment.pin > -1) {
+							add_pin(comment.pin, comment.pinX, comment.pinY);
+							console.log("ADD Pin: "+comment.pinX+" "+comment.pinY);
+							transient_add_comment_pin(comment.pin, comment.id)
+							add_annotation(comment.pinX, comment.pinY, comment.text, comment.pin);
+							$('#annotation-'+comment.pin).data('comment-id', comment.id);
+						}
+						
 					}
 				}
 			}
@@ -292,7 +310,10 @@
 			var comment_count = 0;
 			
 			
-			add_comment_pin = function(pin, comment, id) {
+			add_comment_pin = function(pin, id) {
+				var comment = "#show-" + id;
+				$("#comment-"+id).addClass("comment-pin");
+				console.log("ADD PIN "+pin+" "+comment+" "+id);
 				var pin_icon = "<i class='icon-map-marker pin-comment-unselected' id='unpinned-"+id+"' data-id='"+id+"' style='margin-right: 10px'></i>";
 				// there is a pin
 				if (pin != -1) {
@@ -382,7 +403,7 @@
 				if (pin != -1) {
 					$('#annotation-'+pin).text(text);
 				}
-				add_comment_pin(pin, comment, id);
+				add_comment_pin(pin, id);
 			}
 			
 			update_current_annotation = function(text) {
@@ -483,7 +504,7 @@
 					save_comment(this);
 			   });
 				
-				add_comment_pin(pin_id, "#show-"+comment_count, comment_count);
+				add_comment_pin(pin_id, comment_count);
 				configure_tools();
 				link_annotations();
 				comment_count++;
@@ -686,7 +707,7 @@
 					pinX = x-25/2;
 					pinY = y-30;
 					// add pin
-					add_pin();
+					add_pin(pin_count, pinX, pinY);
 					var comment = $('#comment-'+id);
 					comment.addClass("comment-pin");
 					var pin_id = pin_count-1;
@@ -694,7 +715,7 @@
 					// add annotation
 					var comment_text =  $('#show-'+id).text();
 					add_annotation(pinX, pinY, comment_text, pin_id);
-					add_comment_pin(pin_id, "#show-"+id, id);
+					add_comment_pin(pin_id, id);
 					link_annotations();
 					// add pin indicator
 				}
@@ -767,7 +788,7 @@
 					var entry = $(this).data("entry");
 					if ($(entry).val()) {
 						$('#temp-pin').hide();
-						add_pin();
+						add_pin(pin_count, pinX, pinY);
 						var pin = $('#pin-' + String(pin_count-1));
 						console.log($('#pin-' + String(pin_count-1)));
 						console.log($('#anotate'));
@@ -847,14 +868,15 @@
 					
 				}
 				
-				add_pin = function() {
-					var pin_id = "pin-"+pin_count;
+				add_pin = function(id, pin_x, pin_y) {
+					
+					var pin_id = "pin-"+id;
 					var pin = $("<i id='"+pin_id+"' class='icon-map-marker pin'></i>");
 					pin.appendTo('#image-holder');
 					//addEvent(link, 'click', function () {alert('Hi'); });
 					//$('body').append(pin);
 					//$('#image-holder').append(pin);
-					pin.offset({ top: pinY, left: pinX});
+					pin.offset({ top: pin_y, left: pin_x});
 					console.log($('#'+pin_id)+" "+pin[0]);
 					pin.draggable({
 						cursor: 'move',
@@ -948,15 +970,15 @@
 							pinY = 450;
 							entry = "this one is my fav -- your friend";
 						}
-						add_pin();
+						add_pin(pin_count, pinX, pinY);
 						var pin = $('#pin-' + String(pin_count-1));
 						pin.draggable( 'disable' );
 						console.log($('#pin-' + String(pin_count-1)));
 						console.log($('#anotate'));
 				
-						add_annotation(pin[0].offsetLeft, pin[0].offsetTop, entry,pin_count-1);
+						transient_add_annotation(pin[0].offsetLeft, pin[0].offsetTop, entry,pin_count-1);
 				
-						add_comment(entry, pin_count-1);
+						transient_add_comment(entry, pin_count-1);
 						$('#anotate').hide();
 					}	
 					// hide crosshair on art for artists
