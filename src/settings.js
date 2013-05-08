@@ -58,7 +58,12 @@ function onDropGroup(e, ui){
 	
 	targets[itemName] = parentName.split('-')[0]
 
-	ui.draggable.position({ of: target, my: 'center', at: 'center' })
+	//ui.draggable.position({ of: target, my: 'center', at: 'center' })
+	console.log(target.position())
+	ui.draggable.css('position', 'absolute');
+	ui.draggable.offset({left: target.offset().left + 3, top: target.offset().top + 3 });
+	ui.draggable.width(target.width());
+	console.log(ui.draggable.position())
 	ui.draggable.draggable('option', 'revert', false)
 	setTimeout(function(){ ui.draggable.draggable('option', 'revert', true) }, 1000)
 }
