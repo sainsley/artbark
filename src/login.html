@@ -50,15 +50,14 @@
     <div class="content hero-unit">
       <div class="row">
         <div class="login-form">
-          <h2>Login</h2>
+          <h2>Sign in</h2>
+          <small id="loginInfo" class="muted"></small>
           <form action="">
             <fieldset>
               <div class="clearfix">
                 <input id="inputLoginEmail" type="text" placeholder="Email address">
               </div>
-              <div class="clearfix">
-                <input id="inputLoginSessionId" type="text" placeholder="Session ID">
-              </div>
+
               <button id="btnSignIn" class="btn btn-primary" type="button">Sign in</button>
             </fieldset>
           </form>
@@ -67,14 +66,14 @@
     </div>
  
 	
-	<div>
+	<div class="nonCommenter">
 	<br/>
 	<h2>or</h2>
 	<br/>
 	</div>
 	
 
-    <div class="content hero-unit">
+    <div class="nonCommenter content hero-unit">
       <div class="row">
         <div class="login-form">
           <h2>I want to upload art</h2>
@@ -112,7 +111,9 @@
 			});
 			
 			var userEmail;
-			var sessionId;
+      var userGroup;
+      var artTitle;
+      var artistEmail;
 			
 			function getSettingsFromUrl(){
 				if($.getUrlVar('userEmail')) 
@@ -122,12 +123,24 @@
 					
 				}
 
-				if($.getUrlVar('sessionId')) 
+				if($.getUrlVar('userGroup')) 
 				{
-					sessionId = $.getUrlVar('sessionId');
+					userGroup = $.getUrlVar('userGroup');
 					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
-					
+          for (var i=0; i<$(".nonCommenter").length;i++)
+          {
+            $(".nonCommenter")[i].style.display = "none";
+          }
 				}
+
+        if($.getUrlVar('artTitle') && $.getUrlVar('artistEmail')) 
+        {
+          artTitle = $.getUrlVar('artTitle');
+          artistEmail = $.getUrlVar('artistEmail');
+
+          $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup + "</strong> to view " + artTitle + " by " + artistEmail;
+        }
+
 
 
         if(userEmail != null)
@@ -135,11 +148,7 @@
           $("#inputLoginEmail")[0].value = userEmail;
         }
         
-        if(sessionId != null)
-        {
-        $("#inputLoginSessionId")[0].value = sessionId;
-        }
-				
+
 			};
 			
 			$(document).ready(function() {
@@ -150,13 +159,13 @@
         signIn = function()
         {
                     userEmail = $("#inputLoginEmail")[0].value ;
-          sessionId = $("#inputLoginSessionId")[0].value;
+         
           console.log(userEmail.length)
           console.log("trying to navigate")
-          if(userEmail.length > 0 && sessionId.length > 0)
+          if(userEmail.length > 0)
           {
             console.log("navigating...");
-            window.location.href = "index.html?sessionId="+sessionId+"&userEmail="+userEmail;
+            window.location.href = "index.html?artistEmail="+artistEmail+"&userEmail="+userEmail+"&userGroup="+userGroup;
           }
         }
 

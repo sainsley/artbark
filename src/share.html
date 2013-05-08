@@ -91,7 +91,9 @@
 	<script src="tags.js"></script>
 	<script>
 		var userGroups = ["Mentors","Friends","Colleagues"];
-
+		var artTitle;
+		var artistEmail;
+		
 		$(document).ready(function() {
 				getUserData(getGroupSettings);
 
@@ -106,7 +108,7 @@
 					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span6" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
 					console.log(window.location.href)
 					var splitUrl = window.location.href.split('/');
-					splitUrl[splitUrl.length-1] = "index.html"
+					splitUrl[splitUrl.length-1] = "login.html?artTitle=" + artTitle + "&artistEmail=" + artistEmail + "&userGroup=" + userGroups[groupIndex];
 					var url = splitUrl.join('/');
 					linkHolder += url + '"></div>'
 					$("#linksHolder").append(linkHolder);				
