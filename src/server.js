@@ -12,6 +12,8 @@ var
 var API = {
 	'/upload': onUpload,
 	'/comment': onComment,
+	'/comment-edit': onCommentEdit,
+	'/comment-delete': onCommentDelete,
 	'/data': onUserDataRequest,
 	'/tags': onSubmitTags,
 	'/groups': onSubmitUserGroups
@@ -60,7 +62,48 @@ function onUserDataRequest(req, res){
 }
 
 function onComment(req, res){
+	parseJSON_POST(req, function(json){
+		console.log('got comment', json)
+		
+		var user = account(json.artist)
+		user.comments.push({
+			text: json.comment_text,
+			author: json.commenter,
+			type: json.type,
+			pin: json.pin,
+			id: json.id
+		})
+		
+		OK(res)
+	})
+}
+
+// edits a comment
+function onCommentEdit(req, res){
+	parseJSON_POST(req, function(json){
+		var user = account(json.artist)
+		
+		$.each(user.comments, function(i, e){ 
+			if(e.text == json.oldText && e.author == json.author){
+				e.text = json.text
+			}
+		})
 	
+		OK(res)
+	})
+}
+
+// deletes a comment
+function onCommentDelete(req, res){
+	parseJSON_POST(req, function(json){
+		$.each(user.comments, function(i, e){ 
+			if(e.text == json.oldText && e.author == json.author){
+				delete user.comments[i]
+			}
+		})
+	
+		OK(res)
+	})
 }
 
 /*

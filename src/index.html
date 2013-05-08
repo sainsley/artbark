@@ -97,9 +97,9 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
             <ul id="comments"class="nav nav-list">
-				<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
+				<!--<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
 				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
-				<li class="comment well tag-pastoral group-mentors userType-artist">Looks very #pastoral to me -- your mentor.</li>
+				<li class="comment well tag-pastoral group-mentors userType-artist">Looks very #pastoral to me -- your mentor.</li>-->
             </ul>
 						<div class="comment insertTags userType-commenter" style="	margin-left: 15px;">
 							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
@@ -134,7 +134,7 @@
       <hr>
 
       <footer>
-        <p>&copy; 6.813 User Interface Design : GR4</p>
+        <p>&copy; 6.813 User Interface Design : GR6</p>
       </footer>
 
     </div><!--/.fluid-container-->
@@ -145,10 +145,78 @@
     <script src="external_js/jquery.js"></script>
 		<script src="external_js/jquery-ui-1.10.2.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
+	<script src="userData.js"></script>
 		<script>
 			// for keeping track of temp pen cursor 
 			var pinX, pinY;
 			var current_annotation;
+			
+			// Server data section =================================
+			$(function(){ getUserData(initUserData) })
+			
+			function initUserData(data){
+				artistEmail = $.getUrlVar('artistEmail')
+				userData = data
+				
+				// show the art the that artist uploaded
+				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
+				
+				$('#author').text('by ' + artistEmail)
+				
+				transient_add_comment = add_comment
+				add_comment = function(comment, id){
+					$.ajax({
+						type: 'POST',
+						dataType: 'text',
+						url: '/comment',
+						data: JSON.stringify({
+							type: 'comment',
+							artist: artistEmail,
+							commenter: userEmail,
+							comment_text: comment,
+							pin: undefined,
+							id: id
+						})
+					})
+					
+					transient_add_comment(comment, id)
+				}
+				
+				transient_add_comment_pin = add_comment_pin
+				add_comment_pin = function(pin, comment, id){
+					$.ajax({
+						type: 'POST',
+						dataType: 'text',
+						url: '/comment', 
+						data: JSON.stringify({
+							type: 'pin',
+							artist: artistEmail,
+							commenter: userEmail,
+							comment_text: comment,
+							pin: pin,
+							id: id
+						})
+					})
+					
+					transient_add_comment_pin(pin, comment, id)
+				}
+				
+				// transient definitions are just for things that happen on the page.  non-transient functions send 
+				// data to the server
+				
+				// on page load, add comments stored on the server
+				
+				for(var comment in data[artistEmail].comments){
+					console.log('---> auto-adding saved comment', comment)
+					comment = data[artistEmail].comments[comment]
+					if(comment.type == 'comment'){
+						transient_add_comment(comment.text + ' -- ' + comment.author, -1)
+					} else if(comment.type == 'pin'){
+						transient_add_comment_pin(comment.pin, comment.text + ' -- ' + comment.author, -1)
+					}
+				}
+			}
+			// =====================================================
 		
 			$.extend({
 				getUrlVars : function() {
@@ -211,7 +279,9 @@
 			var userType = "artist";
 
 			var userEmail;
+			var artistEmail;
 			var sessionId;
+			var userData;
 
 			var filters = new Object();
 			
@@ -856,6 +926,7 @@
 				
 					// hardcode annotations
 					for (i = 0; i < 4; i++) {
+						break // --------------------> kyle has disabled this hardcoding with this line
 						var entry = "";
 						if (i == 0) {
 							pinX = 500;
