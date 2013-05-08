@@ -21,6 +21,7 @@
 
 #initial-list {
 	margin-bottom: 1em;
+	min-height: 84px;
 }
 
 #initial-list .pill {
@@ -42,7 +43,6 @@
 	border-radius: 12px;
 	padding: 0.5em;
 	margin: 0.75em;
-	
 	
 	user-select: none;
 	-moz-user-select: none;
