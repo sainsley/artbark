@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Share Links – ArtBark</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+	<link href='http://fonts.googleapis.com/css?family=Cabin+Sketch' rel='stylesheet' type='text/css'>
+    <link href="external_js/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+	<link href="tags.css" rel="stylesheet">
+	<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+		<link href="external_js/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <link href="external_js/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+  <body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="navbar-inner">
+	    <div class="container-fluid">
+	      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
+	      <div class="nav-collapse collapse">
+  	        <p class="navbar-text pull-right">
+  	          Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a>
+  	        </p>
+	      </div><!--/.nav-collapse -->
+	    </div>
+	  </div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="linksHolder" class="hero-unit">
+				<h2>You're Done!</h2>
+				<p class="muted">
+					Share the following links with your commenters.
+				</p>
+				
+				<!--<div class="well next-page-area">
+					<h3><a href="#" class="next need-login">Finish &#x21A0;</a></h3>
+				</div>-->
+				
+				
+				
+				
+			</div>
+		</div><!--/row-->
+		
+
+	<hr>
+
+	<footer>
+	<p>&copy; 6.813 User Interface Design : GR6</p>
+	</footer>
+	
+	</div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="external_js/jquery.js"></script>
+	<script src="external_js/jquery-ui-1.10.2.custom.min.js"></script>
+    <script src="external_js/bootstrap/js/bootstrap.js"></script>
+	<script src="login.js"></script>
+	<script src="userData.js"></script>
+	<script src="tags.js"></script>
+	<script>
+		var userGroups = ["Mentors","Friends","Colleagues"];
+
+		$(document).ready(function() {
+				getUserData(getGroupSettings);
+
+				function getGroupSettings(userData){
+					groups = userData[groups]
+					console.log('adding user data about groups', groups)
+					//$.each(tags, function(i, e){ addTagElement(e) })
+				}
+
+				for (var groupIndex =0; groupIndex< userGroups.length; groupIndex ++)
+				{
+					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span6" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
+					console.log(window.location.href)
+					var splitUrl = window.location.href.split('/');
+					splitUrl[splitUrl.length-1] = "index.html"
+					var url = splitUrl.join('/');
+					linkHolder += url + '"></div>'
+					$("#linksHolder").append(linkHolder);				
+				}
+
+
+				$(".linkBox").click(function(event){
+					
+					$(this).focus();
+					$(this).select();
+				});
+
+				
+		});
+	</script>
+  </body>
+</html>
