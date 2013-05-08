@@ -26,6 +26,11 @@
 	text-align: center;
 }
 
+#ratingText {
+	padding: 0;
+	margin: 0;
+}
+
 .droppable {
 	opacity: 0.8;
 }
@@ -50,9 +55,35 @@
 }
 
 .star {
-	height: 80px;
-	width: 80px;
+	height: 50px;
+	width: 50px;
 	opacity:0.6;
+	left: 0;
+	position: absolute;
+}
+
+.starContainer{
+	height:50px;
+	width:50px;
+	overflow:hidden;
+	position:relative;
+	display:inline-block;
+}
+
+.star-hider{
+	background-color :#eeeeee;
+	height:50px;
+	text-align: right;
+	z-index: 100;
+	top:0;
+	right:0;
+	position: absolute;
+	
+
+}
+
+.partial-star{
+
 }
 
 .brand {
