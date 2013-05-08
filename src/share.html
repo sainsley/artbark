@@ -112,7 +112,8 @@
 
 		$(document).ready(function() {
 				getUserData(getGroups);
-if($.getUrlVar('artistEmail')) 
+				
+				if($.getUrlVar('artistEmail')) 
 				{
 					artistEmail = $.getUrlVar('artistEmail');
 					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
@@ -151,10 +152,10 @@ if($.getUrlVar('artistEmail'))
 					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span9" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
 					console.log(window.location.href)
 					var splitUrl = window.location.href.split('/');
-					splitUrl[splitUrl.length-1] = "login.html?"
+					splitUrl[splitUrl.length-1] = "login.html?userType=commenter"
 					if(artTitle!=null)
 					{
-						splitUrl[splitUrl.length-1] += "artTitle=" + artTitle 
+						splitUrl[splitUrl.length-1] += "&artTitle=" + artTitle 
 					}
 
 					if(artistEmail!=null)
