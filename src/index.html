@@ -954,9 +954,9 @@
 						console.log($('#pin-' + String(pin_count-1)));
 						console.log($('#anotate'));
 				
-						add_annotation(pin[0].offsetLeft, pin[0].offsetTop, entry,pin_count-1);
+						transient_add_annotation(pin[0].offsetLeft, pin[0].offsetTop, entry,pin_count-1);
 				
-						add_comment(entry, pin_count-1);
+						transient_add_comment(entry, pin_count-1);
 						$('#anotate').hide();
 					}	
 					// hide crosshair on art for artists
