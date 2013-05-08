@@ -155,7 +155,7 @@
 			$(function(){ getUserData(initUserData) })
 			
 			function initUserData(data){
-				artistEmail = $.getUrlVar('userEmail')
+				artistEmail = $.getUrlVar('artistEmail')
 				userData = data
 				
 				// show the art the that artist uploaded
@@ -163,6 +163,22 @@
 				
 				$('#author').text('by ' + artistEmail)
 				$('#title').text('"' + data[artistEmail].title + '"')
+				
+				artistDefinedTags = data[artistEmail].tags
+				artistDefinedGroups = []
+				for (var i=0;i<userData[artistEmail].groups.public.length;i++)
+                {
+                    artistDefinedGroups.push(userData[artistEmail].groups.public[i])
+                }
+
+                for (var i=0;i<userData[artistEmail].groups.private.length;i++)
+                {
+                    artistDefinedGroups.push(userData[artistEmail].groups.private[i])
+                }
+
+				
+				//artistDefinedGroups = something
+				initFilters()
 				
 				transient_delete_comment = delete_comment 
 				delete_comment = function(id) {
@@ -689,7 +705,7 @@
 				
 				$('.nav-tabs').button();
 				getSettingsFromUrl();
-				initFilters();
+				
 
 				setRatingText();
 
