@@ -1,7 +1,7 @@
 $(init)
 
 var tags = []
-
+var allUserData
 function init(){
 	login()
 	$('#tags').typeahead({
@@ -40,6 +40,7 @@ function inputTag(e){
 
 function addExistingTags(userData){
 	tags = userData[userEmail].tags
+	allUserData = userData
 	console.log('adding user data', tags)
 	$.each(tags, function(i, e){ addTagElement(e) })
 }
@@ -67,15 +68,20 @@ function addTagElement(text){
 
 function onSubmit(){
 	console.log('posting tags')
+	console.log(allUserData)
+	var artTitle  = allUserData[userEmail].title
+	console.log(artTitle)
 	$.ajax({
 		type: 'POST',
 		dataType: 'text',
 		url: '/tags',
 		data: JSON.stringify({
 			email: userEmail,
-			tags: tags,
-			title: artTitle
+			tags: tags
 		}),
+
+		//
+		
 		//success: function(){ window.location = 'index.html?userEmail=' + userEmail + '&tags=' + tags.join(',') }
 		success: function(){ window.location = 'share.html?artistEmail=' + userEmail + "&artTitle=" + artTitle}
 	})
