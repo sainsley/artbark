@@ -1,11 +1,15 @@
 $(init)
 
+var targets = {}
+
 function init(){
 	console.log('settings init')
+	login()
 
 	var groups = ['Friends', 'Mentors', 'Colleagues']
 	for (var i = 0; i < groups.length; i++){
 		var pill = $('<div class="pill">' + groups[i] + '</div>').attr('id', 'btn-' + groups[i].toLowerCase())
+		pill.attr('data-group', groups[i].toLowerCase())
 		pill.appendTo( '#initial-list' )
 		pill.draggable({
 			containment: '#privacy-area',
@@ -21,13 +25,38 @@ function init(){
 			drop: onDropGroup
 		})
 	}
+	
+	$('.next').click(onSubmit)
+}
+
+function onSubmit(){
+	var publics = $.map(targets, function(val, key){ if(val == 'public') return key })
+	var privates = $.map(targets, function(val, key){ if(val == 'private') return key })
+	
+	$.ajax({
+		type: 'POST',
+		dataType: 'json',
+		url: '/groups',
+		data: JSON.stringify({
+			email: userEmail,
+			groups: { public: publics, private: privates }
+		}),
+		dataType: 'text',
+		success: function(){ window.location = 'tags.html?userEmail=' + userEmail }
+	})
+	
+	return false
 }
 
 function onDropGroup(e, ui){
 	var target = $(this)
 	var item = ui.draggable
 	
-	console.log('dropped', item, 'onto ', target)
+	var itemName = item.data().group
+	var parentName = $(target[0]).parent().attr('id')
+	console.log('dropped', itemName, 'onto ', parentName)
+	
+	targets[itemName] = parentName.split('-')[0]
 
 	ui.draggable.position({ of: target, my: 'center', at: 'center' })
 	ui.draggable.draggable('option', 'revert', false)

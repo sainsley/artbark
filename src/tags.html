@@ -45,9 +45,9 @@
 	      </button>
 	      <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
 	      <div class="nav-collapse collapse">
-	        <p class="navbar-text pull-right">
-	          Logged in as <a href="#" class="navbar-link">Yourself</a>
-	        </p>
+  	        <p class="navbar-text pull-right">
+  	          Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a>
+  	        </p>
 	      </div><!--/.nav-collapse -->
 	    </div>
 	  </div>
@@ -58,13 +58,12 @@
 			<div class="hero-unit">
 				<h2>Choose Feedback Tags – Step 3 of 3</h2>
 				<p class="muted">
-					Enter tags below to direct people's feedback.  Try things like 'color', 'mood', or 'design'.
+					Enter tags below to direct people's feedback.  Try words like 'color', 'mood', or 'design'.
 				</p>
 				
-				<div class="well next-page-area">
-					<h3><a href="#" class="next">Next Page &#x21A0;</a></h3>
-					<a href="#" class="btn btn-info next">Submit</a>
-				</div>
+				<!--<div class="well next-page-area">
+					<h3><a href="#" class="next need-login">Finish &#x21A0;</a></h3>
+				</div>-->
 				
 				<div class="well">
 					<input type="text" id="tags" class="span6" autocomplete="off" placeholder="Enter hashtag name(s) for the kind of feedback that you want." data-provide="typeahead">
@@ -82,8 +81,7 @@
 				</div>
 				
 				<div class="well next-page-area">
-					<h3><a href="#" class="next">Next Page &#x21A0;</a></h3>
-					<a href="#" class="btn btn-info next">Submit</a>
+					<h3><a href="" class="next need-login">Finish &#x21A0;</a></h3>
 				</div>
 			</div>
 		</div><!--/row-->
@@ -92,7 +90,7 @@
 	<hr>
 
 	<footer>
-	<p>&copy; 6.813 User Interface Design : GR4</p>
+	<p>&copy; 6.813 User Interface Design : GR6</p>
 	</footer>
 
 	</div><!--/.fluid-container-->
@@ -103,6 +101,8 @@
     <script src="external_js/jquery.js"></script>
 	<script src="external_js/jquery-ui-1.10.2.custom.min.js"></script>
     <script src="external_js/bootstrap/js/bootstrap.js"></script>
+	<script src="login.js"></script>
+	<script src="userData.js"></script>
 	<script src="tags.js"></script>
   </body>
 </html>

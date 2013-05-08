@@ -3,6 +3,7 @@ $(init)
 var tags = []
 
 function init(){
+	login()
 	$('#tags').typeahead({
 		source: ['color', 'mood', 'design'],
 		minLength: 0
@@ -14,6 +15,8 @@ function init(){
 			inputTag()
 		}
 	})
+	
+	getUserData(addExistingTags)
 	
 	$('.next').click(onSubmit)
 }
@@ -33,6 +36,12 @@ function inputTag(e){
 	
 	tags.push.apply(tags, text)
 	$.each(text, function(i, e){ addTagElement(e) })
+}
+
+function addExistingTags(userData){
+	tags = userData[userEmail].tags
+	console.log('adding user data', tags)
+	$.each(tags, function(i, e){ addTagElement(e) })
 }
 
 function addTagElement(text){
@@ -57,7 +66,19 @@ function addTagElement(text){
 }
 
 function onSubmit(){
-	window.location = 'index.html?tags=' + tags.join(',')
+	console.log('posting tags')
+	$.ajax({
+		type: 'POST',
+		dataType: 'text',
+		url: '/tags',
+		data: JSON.stringify({
+			email: userEmail,
+			tags: tags
+		}),
+		success: function(){ window.location = 'index.html?userEmail=' + userEmail + '&tags=' + tags.join(',') }
+	})
+	
+	return false
 }
 
 function onCloseTag(e){
