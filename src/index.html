@@ -45,9 +45,8 @@
           </button>
           <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
           <div class="nav-collapse collapse">
-            <p id="welcomeMsg" class="navbar-text pull-right" style="line-height:1.2; text-align:right; padding-top:4px">
-               Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a><br />
-               Session ID: <a id="linkSession" href="login.html" class="navbar-link">N/A</a>
+            <p id="welcomeMsg" class="navbar-text pull-right" style="text-align:right;">
+               Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a>
             </p>
             
           </div><!--/.nav-collapse -->
@@ -95,7 +94,7 @@
         </div><!--/span-->
         <div class="span4">
           <div id="comments-holder" class="well sidebar-nav">
-						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
+						<h3 class="nav-header" style="font-size: 16px;">Comments</h3>
             <ul id="comments"class="nav nav-list">
 				<!--<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
 				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
@@ -154,17 +153,14 @@
 			// Server data section =================================
 			$(function(){ getUserData(initUserData) })
 			
-			function initUserData(data){
-				artistEmail = $.getUrlVar('artistEmail')
-				userData = data
-				
-				// show the art the that artist uploaded
-				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
-				
-				$('#author').text('by ' + artistEmail)
-				$('#title').text('"' + data[artistEmail].title + '"')
-				
-				artistDefinedTags = data[artistEmail].tags
+
+			function loadTags()
+			{
+				artistDefinedTags = userData[artistEmail].tags
+			}
+
+			function loadGroups()
+			{
 				artistDefinedGroups = []
 				for (var i=0;i<userData[artistEmail].groups.public.length;i++)
                 {
@@ -175,8 +171,18 @@
                 {
                     artistDefinedGroups.push(userData[artistEmail].groups.private[i])
                 }
+			}
 
+			function initUserData(data){
+				artistEmail = $.getUrlVar('artistEmail')
+				userData = data
 				
+				// show the art the that artist uploaded
+				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
+				
+				$('#author').text('by ' + artistEmail)
+				$('#title').text('"' + data[artistEmail].title + '"')
+
 				//artistDefinedGroups = something
 				initFilters()
 				
@@ -654,6 +660,9 @@
 
 			initFilters = function()
 			{
+				loadTags()
+				loadGroups()
+
 				// Add filtering options for tags and groups
 				for(var i=0;i<artistDefinedTags.length;i++)
 				{
@@ -666,6 +675,11 @@
 				for(var i=0;i<artistDefinedGroups.length;i++)
 				{
 					add_group_tag(artistDefinedGroups[i]);
+				}
+
+				if($("li.comment").length == 0)
+				{
+					$("button.btn-filter").addClass("disabled");
 				}
 			}
 
@@ -700,19 +714,49 @@
 			});*/
 
 			avgRating = 3.3;
-			setRatingText = function()
+
+
+			setUserType = function()
 			{
 				var ratingText;
+
 				if(userType == "artist")
 				{
+					if($(".userType-commenter").length > 0)
+					{
+						for(var i=0;i<$(".userType-commenter").length;i++)
+						{
+							$(".userType-commenter")[i].style.display = "none";
+						}
+					}
+					console.log("user type is artist")
 					ratingText = "Average rating: " + String(avgRating);
 				}
 				else
 				{
+					if($(".userType-artist").length>0)
+					{
+						for(var i=0;i<$(".userType-artist").length;i++)
+						{
+							$(".userType-artist")[i].style.display = "none";
+						}
+					}
+
 					ratingText = "Rate this piece below...";
 				}
 
 				$("#ratingText")[0].innerHTML = ratingText;
+			}
+
+			setEmptyCommentsMessage = function()
+			{
+				console.log("setting empty comments message if no comments...")
+				console.log($("#comments"))
+				if($("#comments")[0].children.length == 0)
+				{
+					var emptyCommentsMessage = '<p class="muted">There are no comments yet.</p>'
+					$("#comments").append(emptyCommentsMessage);
+				}
 			}
 			
 		 	$(document).ready(function() {
@@ -732,33 +776,11 @@
 				} );
 				
 				$('.nav-tabs').button();
-				getSettingsFromUrl();
 				
-
-				setRatingText();
-
-				console.log("usertype="+userType);
-				// Ghetto session control
-				if(userType == "artist")
-				{
-					if($(".userType-commenter").length > 0)
-					{
-						for(var i=0;i<$(".userType-commenter").length;i++)
-						{
-							$(".userType-commenter")[i].style.display = "none";
-						}
-					}
-				}	
-				else
-				{
-					if($(".userType-artist").length>0)
-					{
-						for(var i=0;i<$(".userType-artist").length;i++)
-						{
-							$(".userType-artist")[i].style.display = "none";
-						}
-					}
-				}
+				getSettingsFromUrl();
+				console.log(userType)
+				setUserType();
+				setEmptyCommentsMessage();
 			
 				$('#anotate').hide();
 				
