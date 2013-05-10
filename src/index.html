@@ -79,11 +79,11 @@
 			<!--<div class="btn-magnify"><button id="btn-magnify" type="button" class="btn btn-primary" data-toggle="button"><i id="icon-magnify" class="icon-zoom-in"></i></button></div> -->
 						<textarea style='position: absolute; display: none; resize: none;' id='edit-annotation-entry'  class='comment well'></textarea>
 						<div id="anotate" class="popover fade right in" style="display: block;">
-							<div class="arrow"></div>
+							<div class="arrow"></div>s
 							<h3 class="popover-title">Annotate this work<button class="btn btn-large close-annotation close"><i class="icon-remove-circle"></i></button></h3>
 							<div class="popover-content">
 								<div class="annotation insertTags">
-									Tag:
+									Insert tag:
 								</div>
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
@@ -99,7 +99,7 @@
             	<p id="noCommentsMsg" class="muted">There are no comments yet.</p>
             </ul>
 						<div class="comment insertTags userType-commenter" style="	margin-left: 15px;">
-							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
+							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Insert tag:</span>
 						</div>
 						<textarea id="main-entry" class="comment-box userType-commenter" rows="5"></textarea>
 						<div>
@@ -593,7 +593,7 @@
 				$("#"+tagId)[0].addEventListener("click",onClickFilterButton,false);
 				$("#"+tagId)[0].className += " active";
 
-				var newInsertTagButton = '<button type="button" class="well btn-insert-tag">#' + tagName + '</button>';
+				var newInsertTagButton = '<button class="btn btn-info btn-insert-tag" type="button">#' + tagName + '</button>';
 
 /*()				for(var i=0;i<$(".insertTags").length;i++)
 				{
@@ -602,6 +602,8 @@
 				$(".insertTags").append(newInsertTagButton);
 
 				filters[tagId] = 1;
+
+
 				
 			}
 
@@ -689,6 +691,24 @@
 				{
 					$("button.btn-filter").addClass("disabled");
 				}
+
+				
+				$(".btn-insert-tag").click(function(event)
+				{
+					console.log("INSERTING tag...")
+					if(($(this)[0].parentElement.className).indexOf("annotation")>-1)
+					{
+						var entryArea = $("#annotation-entry");
+						
+					}
+					else if(($(this)[0].parentElement.className).indexOf("comment")>-1)
+					{
+						var entryArea = $("#main-entry");
+					}
+					console.log("writing to textarea");
+					console.log(entryArea);
+					entryArea.val(entryArea.val() + $(this)[0].innerHTML);
+				});
 			}
 
 			onClickFilterButton = function(event)
@@ -945,22 +965,6 @@
 
 				});
 
-				$(".btn-insert-tag").click(function(event)
-				{
-					
-					if(($(this)[0].parentElement.className).indexOf("annotation")>-1)
-					{
-						var entryArea = $("#annotation-entry");
-						
-					}
-					else if(($(this)[0].parentElement.className).indexOf("comment")>-1)
-					{
-						var entryArea = $("#main-entry");
-					}
-					console.log("writing to textarea");
-					console.log(entryArea);
-					entryArea.val(entryArea.val() + $(this)[0].innerHTML);
-				});
 
 				
 				function onMouseEnterAnnotation(event)
