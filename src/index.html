@@ -83,7 +83,7 @@
 							<h3 class="popover-title">Annotate this work<button class="btn btn-large close-annotation close"><i class="icon-remove-circle"></i></button></h3>
 							<div class="popover-content">
 								<div class="annotation insertTags">
-									Tag:
+									Insert tag:
 								</div>
 								<textarea id="annotation-entry" class="comment-box span12" rows="5"></textarea>
 								<button class="annotation post btn btn-info span12" style="margin-left: 0;" data-entry="#annotation-entry">Post</button>
@@ -96,12 +96,10 @@
           <div id="comments-holder" class="well sidebar-nav">
 						<h3 class="nav-header" style="font-size: 16px;">Comments</h3>
             <ul id="comments"class="nav nav-list">
-				<!--<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
-				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
-				<li class="comment well tag-pastoral group-mentors userType-artist">Looks very #pastoral to me -- your mentor.</li>-->
+            	<p id="noCommentsMsg" class="muted">There are no comments yet.</p>
             </ul>
 						<div class="comment insertTags userType-commenter" style="	margin-left: 15px;">
-							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Tag:</span>
+							<span style="font-size: 20; font-weight: 200; vertical-align: top;">Insert tag:</span>
 						</div>
 						<textarea id="main-entry" class="comment-box userType-commenter" rows="5"></textarea>
 						<div>
@@ -199,6 +197,7 @@
 						})
 					})
 					console.log("delete comment "+id)
+
 					//transient_delete_comment(id)
 				}
 				
@@ -237,6 +236,7 @@
 					var type = "comment";
 					var pin_x = -1;
 					var pin_y = -1;
+
 					if (pinid > -1) {
 						type = "pin";
 						var pin_id = "#pin-"+pinid;
@@ -388,6 +388,7 @@
 			}
 			
 			temp_delete_comment = function(id) {
+
 				//var id = $(delete_btn).data("id");
 				var comment = '#comment-'+id;
 				var pin = $(comment).data("pin");
@@ -399,6 +400,7 @@
 					deleted_pin = -1;
 				}
 				$(comment).hide();
+				setEmptyCommentsMessage();
 				var comment_text =  $('#show-'+id).text();
 				show_delete_alert(id, comment_text, comment, pin);
 			}
@@ -418,14 +420,18 @@
 						if (deleted_pin != -1) {
 							$(deleted_pin).show();
 						}
+
+						setEmptyCommentsMessage();
 						alert.remove();
 					});
 					$("#perm-delete-"+id).click(function() {
+						setEmptyCommentsMessage();
 						delete_comment(id);
 					});
 					
 					// auto-remove after a while
 					window.setTimeout(function() {
+						setEmptyCommentsMessage();
 						alert.fadeOut('slow'); 
 						//alert.alert('close'); 
 						delete_comment(id);
@@ -567,6 +573,8 @@
 				}
 
 				$("#comments").append(list_item);
+				setEmptyCommentsMessage()
+
 			  $(".save").click(function (event) {
 					save_comment(this);
 			   });
@@ -585,7 +593,7 @@
 				$("#"+tagId)[0].addEventListener("click",onClickFilterButton,false);
 				$("#"+tagId)[0].className += " active";
 
-				var newInsertTagButton = '<button type="button" class="well btn-insert-tag">#' + tagName + '</button>';
+				var newInsertTagButton = '<button class="btn btn-info btn-insert-tag" type="button">#' + tagName + '</button>';
 
 /*()				for(var i=0;i<$(".insertTags").length;i++)
 				{
@@ -594,6 +602,8 @@
 				$(".insertTags").append(newInsertTagButton);
 
 				filters[tagId] = 1;
+
+
 				
 			}
 
@@ -681,6 +691,24 @@
 				{
 					$("button.btn-filter").addClass("disabled");
 				}
+
+				
+				$(".btn-insert-tag").click(function(event)
+				{
+					console.log("INSERTING tag...")
+					if(($(this)[0].parentElement.className).indexOf("annotation")>-1)
+					{
+						var entryArea = $("#annotation-entry");
+						
+					}
+					else if(($(this)[0].parentElement.className).indexOf("comment")>-1)
+					{
+						var entryArea = $("#main-entry");
+					}
+					console.log("writing to textarea");
+					console.log(entryArea);
+					entryArea.val(entryArea.val() + $(this)[0].innerHTML);
+				});
 			}
 
 			onClickFilterButton = function(event)
@@ -752,10 +780,37 @@
 			{
 				console.log("setting empty comments message if no comments...")
 				console.log($("#comments"))
-				if($("#comments")[0].children.length == 0)
+				if($("#comments")[0].children.length <= 1)
 				{
-					var emptyCommentsMessage = '<p class="muted">There are no comments yet.</p>'
-					$("#comments").append(emptyCommentsMessage);
+					console.log("No comments at all")
+					$("#noCommentsMsg")[0].style.display = "block";
+				}
+				else
+				{
+					var allCommentsHidden = true;
+					for(var i=1;i<$("#comments")[0].children.length;i++)
+					{
+							
+						if($("#comments")[0].children[i].style.display != "none")
+						{
+							allCommentsHidden = false;
+						}
+					}
+
+					if(allCommentsHidden)
+					{
+						console.log("Some comments, but all hidden")
+						$("#noCommentsMsg")[0].style.display = "block";
+					}
+					else
+					{
+						console.log("There are comments, remove the message")
+					$("#noCommentsMsg")[0].style.display = "none";
+					}
+					
+
+
+					
 				}
 			}
 			
@@ -910,22 +965,6 @@
 
 				});
 
-				$(".btn-insert-tag").click(function(event)
-				{
-					
-					if(($(this)[0].parentElement.className).indexOf("annotation")>-1)
-					{
-						var entryArea = $("#annotation-entry");
-						
-					}
-					else if(($(this)[0].parentElement.className).indexOf("comment")>-1)
-					{
-						var entryArea = $("#main-entry");
-					}
-					console.log("writing to textarea");
-					console.log(entryArea);
-					entryArea.val(entryArea.val() + $(this)[0].innerHTML);
-				});
 
 				
 				function onMouseEnterAnnotation(event)
