@@ -2,3 +2,5 @@
 .DS_Store
 src/node_modules/
 src/uploads/
+
+src/userData.json
