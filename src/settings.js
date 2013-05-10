@@ -26,6 +26,11 @@ function init(){
 		})
 	}
 	
+	$('#initial-list').droppable({
+			accept: '#initial-list div',
+			drop: onReturnGroup
+	});
+	
 	$('.next').click(onSubmit)
 }
 
@@ -46,6 +51,11 @@ function onSubmit(){
 	})
 	
 	return false
+}
+
+function onReturnGroup(e, ui) {
+	ui.draggable.draggable('option', 'revert', false)
+	setTimeout(function(){ ui.draggable.draggable('option', 'revert', true) }, 1000)
 }
 
 function onDropGroup(e, ui){

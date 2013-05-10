@@ -45,9 +45,8 @@
           </button>
           <a class="brand" style="padding-top: 20px; font-size: 48px;">ArtBark</a>
           <div class="nav-collapse collapse">
-            <p id="welcomeMsg" class="navbar-text pull-right" style="line-height:1.2; text-align:right; padding-top:4px">
-               Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a><br />
-               Session ID: <a id="linkSession" href="login.html" class="navbar-link">N/A</a>
+            <p id="welcomeMsg" class="navbar-text pull-right" style="text-align:right;">
+               Welcome, <a id="linkUserEmail" href="login.html" class="navbar-link">Guest</a>
             </p>
             
           </div><!--/.nav-collapse -->
@@ -95,7 +94,7 @@
         </div><!--/span-->
         <div class="span4">
           <div id="comments-holder" class="well sidebar-nav">
-						<h3 class="nav-header" style="font-size: 16px;">Comment</h3>
+						<h3 class="nav-header" style="font-size: 16px;">Comments</h3>
             <ul id="comments"class="nav nav-list">
 				<!--<li class="comment well tag-happy group-friends userType-artist">This looks #happy! -- your friend</li>
 				<li class="comment well tag-sad group-mentors userType-artist">I think this looks #sad -- your mentor #2.</li>
@@ -154,17 +153,14 @@
 			// Server data section =================================
 			$(function(){ getUserData(initUserData) })
 			
-			function initUserData(data){
-				artistEmail = $.getUrlVar('artistEmail')
-				userData = data
-				
-				// show the art the that artist uploaded
-				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
-				
-				$('#author').text('by ' + artistEmail)
-				$('#title').text('"' + data[artistEmail].title + '"')
-				
-				artistDefinedTags = data[artistEmail].tags
+
+			function loadTags()
+			{
+				artistDefinedTags = userData[artistEmail].tags
+			}
+
+			function loadGroups()
+			{
 				artistDefinedGroups = []
 				for (var i=0;i<userData[artistEmail].groups.public.length;i++)
                 {
@@ -175,12 +171,22 @@
                 {
                     artistDefinedGroups.push(userData[artistEmail].groups.private[i])
                 }
+			}
 
+			function initUserData(data){
+				artistEmail = $.getUrlVar('artistEmail')
+				userData = data
 				
+				// show the art the that artist uploaded
+				$('#art').attr('src', './uploads/' + data[artistEmail].artFile)
+				
+				$('#author').text('by ' + artistEmail)
+				$('#title').text('"' + data[artistEmail].title + '"')
+
 				//artistDefinedGroups = something
 				initFilters()
 				
-				transient_delete_comment = delete_comment 
+				//transient_delete_comment = delete_comment 
 				delete_comment = function(id) {
 					$.ajax({
 						type: 'POST',
@@ -193,55 +199,68 @@
 						})
 					})
 					console.log("delete comment "+id)
-					transient_delete_comment(id)
+					//transient_delete_comment(id)
+				}
+				
+				edit_comment = function(id, pinid) {
+					var comment = $("#comment-"+id).text();
+					console.log("EDIT comment: "+comment);
+					var type = "comment";
+					var pin_x = -1;
+					var pin_y = -1;
+					if (pinid > -1) {
+						type = "pin";
+						var pin_id = "#pin-"+pinid;
+						pin_x = $(pin_id).offset().left;
+						pin_y = $(pin_id).offset().top;
+					
+					}
+					$.ajax({
+						type: 'POST',
+						dataType: 'text',
+						url: '/comment-edit',
+						data: JSON.stringify({
+							artist: artistEmail,
+							id: id,
+							text: comment,
+							author: userEmail,
+							pin: pinid,
+							pinX: pin_x,
+							pinY: pin_y,
+							type: type
+						})
+					})
 				}
 				
 				transient_add_comment = add_comment
 				add_comment = function(comment, id, pinid){
+					var type = "comment";
+					var pin_x = -1;
+					var pin_y = -1;
+					if (pinid > -1) {
+						type = "pin";
+						var pin_id = "#pin-"+pinid;
+						pin_x = $(pin_id).offset().left;
+						pin_y = $(pin_id).offset().top;
+					
+					}
 					$.ajax({
 						type: 'POST',
 						dataType: 'text',
 						url: '/comment',
 						data: JSON.stringify({
-							type: 'comment',
+							type: type,
 							artist: artistEmail,
 							commenter: userEmail,
 							comment_text: comment,
 							pin: pinid,
-							id: id
-						})
-					})
-					
-					transient_add_comment(comment, id, pinid)
-				}
-				
-				transient_add_comment_pin = add_comment_pin
-				add_comment_pin = function(pin, id){
-					if (pin == -1) {
-						return;
-					}
-					var comment_text = $("#show-"+pin).text();
-					var pin_id = "#pin-"+pin;
-					var pin_x = $(pin_id).offset().left;
-					var pin_y = $(pin_id).offset().top;
-					console.log("PIN XY "+pin_x+" "+pin_y)
-					$.ajax({
-						type: 'POST',
-						dataType: 'text',
-						url: '/comment', 
-						data: JSON.stringify({
-							type: 'pin',
-							artist: artistEmail,
-							commenter: userEmail,
-							comment_text: comment_text,
-							pin: pin,
 							pinX: pin_x,
 							pinY: pin_y,
 							id: id
 						})
 					})
 					
-					transient_add_comment_pin(pin, id)
+					transient_add_comment(comment, id, pinid)
 				}
 				
 				// transient definitions are just for things that happen on the page.  non-transient functions send 
@@ -252,9 +271,14 @@
 				for(var comment in data[artistEmail].comments){
 					console.log('---> auto-adding saved comment', comment)
 					comment = data[artistEmail].comments[comment]
-					if(comment.type == 'comment'){
-						transient_add_comment(comment.text + ' -- ' + comment.author, comment.id, -1)
-					} else if(comment.type == 'pin'){
+					if (!comment) continue;
+					transient_add_comment(comment.text + ' -- ' + comment.author, comment.id, comment.pin)
+					if(comment.type == 'pin'){
+						add_pin(comment.pin, comment.pinX, comment.pinY);
+						add_annotation(comment.pinX, comment.pinY, comment.text, comment.pin);
+						$('#annotation-'+comment.pin).data('comment-id', comment.id);
+					} 
+					/*else if(comment.type == 'pin'){
 						if (comment.pin > -1) {
 							add_pin(comment.pin, comment.pinX, comment.pinY);
 							console.log("ADD Pin: "+comment.pinX+" "+comment.pinY);
@@ -263,7 +287,7 @@
 							$('#annotation-'+comment.pin).data('comment-id', comment.id);
 						}
 						
-					}
+					}*/
 				}
 			}
 			// =====================================================
@@ -342,10 +366,8 @@
 			var comment_count = 0;
 			
 			
-			add_comment_pin = function(pin, id) {
+			add_pin_icon = function(pin, id) {
 				var comment = "#show-" + id;
-				$("#comment-"+id).addClass("comment-pin");
-				console.log("ADD PIN "+pin+" "+comment+" "+id);
 				var pin_icon = "<i class='icon-map-marker pin-comment-unselected' id='unpinned-"+id+"' data-id='"+id+"' style='margin-right: 10px'></i>";
 				// there is a pin
 				if (pin != -1) {
@@ -365,7 +387,7 @@
 				}
 			}
 			
-			delete_comment = function(id) {
+			temp_delete_comment = function(id) {
 				//var id = $(delete_btn).data("id");
 				var comment = '#comment-'+id;
 				var pin = $(comment).data("pin");
@@ -382,7 +404,7 @@
 			}
 			
 			show_delete_alert = function(id, comment_text, comment, pin) {
-				var alertHtml = '<div id="delete-alert-'+id+'" class="alert" style="display: none;"> <button type="button" class="close" data-dismiss="alert">&times;</button> <strong>Comment Deleted</strong> '+comment_text+' <a id="undo-'+id+'">Undo? </a></div>';
+				var alertHtml = '<div id="delete-alert-'+id+'" class="alert" style="display: none;"> <button type="button" class="close" data-dismiss="alert" id="perm-delete-'+id+'">&times;</button> <strong>Comment Deleted</strong> '+comment_text+' <a id="undo-'+id+'">Undo? </a></div>';
 				// strange duplicate bug i dont have time to fix
 				if (!$('#delete-alert-'+id)[0]) {
 					var alert = $(alertHtml);
@@ -398,11 +420,21 @@
 						}
 						alert.remove();
 					});
+					$("#perm-delete-"+id).click(function() {
+						delete_comment(id);
+					});
+					
+					// auto-remove after a while
+					window.setTimeout(function() {
+						alert.fadeOut('slow'); 
+						//alert.alert('close'); 
+						delete_comment(id);
+					}, 10000);
 					alert.show();
 				}
 			}
 			
-			edit_comment = function(edit_btn) {
+			begin_edit_comment = function(edit_btn) {
 				var comment = '#show-'+$(edit_btn).data("id");
 				var current = $(comment).text();
 				$(comment).hide();
@@ -420,6 +452,7 @@
 				var id = $(save_btn).data("id");
 				update_comment(id, current);
 				$(edit).hide();
+				edit_comment(id, $('#comment-'+id).data("pin"));
 			}
 			
 			update_comment = function(id, text) {
@@ -435,7 +468,7 @@
 				if (pin != -1) {
 					$('#annotation-'+pin).text(text);
 				}
-				add_comment_pin(pin, id);
+				add_pin_icon(pin, id);
 			}
 			
 			update_current_annotation = function(text) {
@@ -444,6 +477,7 @@
 				update_comment(id, text);
 				current_annotation.show();
 				$("#edit-annotation-entry").hide();
+				edit_comment(id, $('#comment-'+id).data("pin"));
 			}
 			
 			get_tool_panel = function(comment_id) {
@@ -455,10 +489,10 @@
 			configure_tools = function() {
 			  $(".delete").click(function (event) {
 					var id = $(this).data("id");
-					delete_comment(id);
+					temp_delete_comment(id);
 			   });
  			  $(".edit").click(function (event) {
- 					edit_comment(this);
+ 					begin_edit_comment(this);
  			   });
 			}
 			
@@ -537,7 +571,7 @@
 					save_comment(this);
 			   });
 				
-				add_comment_pin(pin_id, id);
+				add_pin_icon(pin_id, id);
 				configure_tools();
 				link_annotations();
 				comment_count = Math.max(comment_count+1, id+1);
@@ -626,6 +660,9 @@
 
 			initFilters = function()
 			{
+				loadTags()
+				loadGroups()
+
 				// Add filtering options for tags and groups
 				for(var i=0;i<artistDefinedTags.length;i++)
 				{
@@ -638,6 +675,11 @@
 				for(var i=0;i<artistDefinedGroups.length;i++)
 				{
 					add_group_tag(artistDefinedGroups[i]);
+				}
+
+				if($("li.comment").length == 0)
+				{
+					$("button.btn-filter").addClass("disabled");
 				}
 			}
 
@@ -672,19 +714,49 @@
 			});*/
 
 			avgRating = 3.3;
-			setRatingText = function()
+
+
+			setUserType = function()
 			{
 				var ratingText;
+
 				if(userType == "artist")
 				{
+					if($(".userType-commenter").length > 0)
+					{
+						for(var i=0;i<$(".userType-commenter").length;i++)
+						{
+							$(".userType-commenter")[i].style.display = "none";
+						}
+					}
+					console.log("user type is artist")
 					ratingText = "Average rating: " + String(avgRating);
 				}
 				else
 				{
+					if($(".userType-artist").length>0)
+					{
+						for(var i=0;i<$(".userType-artist").length;i++)
+						{
+							$(".userType-artist")[i].style.display = "none";
+						}
+					}
+
 					ratingText = "Rate this piece below...";
 				}
 
 				$("#ratingText")[0].innerHTML = ratingText;
+			}
+
+			setEmptyCommentsMessage = function()
+			{
+				console.log("setting empty comments message if no comments...")
+				console.log($("#comments"))
+				if($("#comments")[0].children.length == 0)
+				{
+					var emptyCommentsMessage = '<p class="muted">There are no comments yet.</p>'
+					$("#comments").append(emptyCommentsMessage);
+				}
 			}
 			
 		 	$(document).ready(function() {
@@ -704,33 +776,11 @@
 				} );
 				
 				$('.nav-tabs').button();
-				getSettingsFromUrl();
 				
-
-				setRatingText();
-
-				console.log("usertype="+userType);
-				// Ghetto session control
-				if(userType == "artist")
-				{
-					if($(".userType-commenter").length > 0)
-					{
-						for(var i=0;i<$(".userType-commenter").length;i++)
-						{
-							$(".userType-commenter")[i].style.display = "none";
-						}
-					}
-				}	
-				else
-				{
-					if($(".userType-artist").length>0)
-					{
-						for(var i=0;i<$(".userType-artist").length;i++)
-						{
-							$(".userType-artist")[i].style.display = "none";
-						}
-					}
-				}
+				getSettingsFromUrl();
+				console.log(userType)
+				setUserType();
+				setEmptyCommentsMessage();
 			
 				$('#anotate').hide();
 				
@@ -748,8 +798,9 @@
 					// add annotation
 					var comment_text =  $('#show-'+id).text();
 					add_annotation(pinX, pinY, comment_text, pin_id);
-					add_comment_pin(pin_id, id);
+					add_pin_icon(pin_id, id);
 					link_annotations();
+					edit_comment(id, pin_id);
 					// add pin indicator
 				}
 			
@@ -906,15 +957,19 @@
 					var pin_id = "pin-"+id;
 					var pin = $("<i id='"+pin_id+"' class='icon-map-marker pin'></i>");
 					pin.appendTo('#image-holder');
+					pin.data('pin-id', id)
 					//addEvent(link, 'click', function () {alert('Hi'); });
 					//$('body').append(pin);
 					//$('#image-holder').append(pin);
 					pin.offset({ top: pin_y, left: pin_x});
 					console.log($('#'+pin_id)+" "+pin[0]);
-					pin.draggable({
-						cursor: 'move',
-						containment: '#art'
-					})
+					if (userType != 'artist') {
+						pin.draggable({
+							cursor: 'move',
+							containment: '#art',
+							stop: updatePin
+						})
+					}
 					//$('#div'+pin_id).offset({ top: event.pageY-30, left: event.pageX-25/2});
 					pin[0].addEventListener("mouseover", onMouseEnterAnnotation, false);
 					pin[0].addEventListener("mouseout", onMouseLeaveAnnotation, false);
@@ -923,6 +978,13 @@
 					}
 					//$('#'+pin_id)[0].className += "pin";
 					pin_count++;
+				}
+				
+				updatePin = function( event, ui ) {
+					var id = $(this).data('pin-id');
+					var comment_id = $("#annotation-"+id).data("comment-id");
+					console.log("UPDATE "+id+" "+comment_id);
+					edit_comment(comment_id, id);
 				}
 				
 				add_annotation = function(x,y, body, pin_id_num) {

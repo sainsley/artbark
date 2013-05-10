@@ -28,7 +28,13 @@
           padding-left: 5px;
           padding-right: 5px;
         }
+      }	
+
+      #artistLinkHolder
+      {
+      	padding: 15px 0 0 0 ;
       }
+
     </style>
 		<link href="external_js/fontawesome/css/font-awesome.css" rel="stylesheet">
     <link href="external_js/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -55,20 +61,43 @@
 
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<div id="linksHolder" class="hero-unit">
+			<div class="hero-unit">
 				<h2>You're Done!</h2>
-				<p class="muted">
+				<div id="commenterLinksHolder">
+				<p id="shareLinkInfo" class="muted">
 					Share the following links with your commenters.
 				</p>
-				
+				</div>
+
+				<div id="artistLinkHolder">
+
+				<p class="muted">
+					Then, use the following link to track your feedback.
+				</p>
 				<!--<div class="well next-page-area">
 					<h3><a href="#" class="next need-login">Finish &#x21A0;</a></h3>
 				</div>-->
 				
+				<div class="well"><p>For <strong>you</strong>, the artist</p><input type="text" id="artistLinkText" class="linkBox span9" readonly="readonly" autocomplete="off" data-provide="typeahead">
+
+<h3><a id="artistLink" href="#" class="next need-login">Go to your art &#x21A0;</a></h3>
+				</div>
+
+				</div>
+				
+				
+
+
+
+				</div>
+				
+					
+				</div>
 				
 				
 				
-			</div>
+				
+			
 		</div><!--/row-->
 		
 
@@ -93,6 +122,8 @@
 		var userGroups= new Array();// = ["Mentors","Friends","Colleagues"];
 		var artTitle;
 		var artistEmail;
+		var viewArtLink;
+
 				$.extend({
 				getUrlVars : function() {
 					var vars = [], hash;
@@ -112,7 +143,8 @@
 
 		$(document).ready(function() {
 				getUserData(getGroups);
-if($.getUrlVar('artistEmail')) 
+				
+				if($.getUrlVar('artistEmail')) 
 				{
 					artistEmail = $.getUrlVar('artistEmail');
 					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
@@ -148,13 +180,13 @@ if($.getUrlVar('artistEmail'))
 				
 				for (var groupIndex =0; groupIndex< userGroups.length; groupIndex ++)
 				{
-					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" id="tags" class="linkBox span9" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
+					var linkHolder = '<div class="well"><p>For your <strong>' + userGroups[groupIndex] + '</strong></p><input type="text" class="linkBox span9" readonly="readonly" autocomplete="off" data-provide="typeahead" value="';
 					console.log(window.location.href)
 					var splitUrl = window.location.href.split('/');
-					splitUrl[splitUrl.length-1] = "login.html?"
+					splitUrl[splitUrl.length-1] = "login.html?userType=commenter"
 					if(artTitle!=null)
 					{
-						splitUrl[splitUrl.length-1] += "artTitle=" + artTitle 
+						splitUrl[splitUrl.length-1] += "&artTitle=" + artTitle 
 					}
 
 					if(artistEmail!=null)
@@ -165,9 +197,25 @@ if($.getUrlVar('artistEmail'))
 					splitUrl[splitUrl.length-1] += "&userGroup=" + userGroups[groupIndex];
 					var url = splitUrl.join('/');
 					linkHolder += url + '"></div>'
-					$("#linksHolder").append(linkHolder);				
+					$("#commenterLinksHolder").append(linkHolder);				
 				}
 
+				var artistLink = "index.html?userType=artist"
+				if(artTitle!=null)
+				{
+					artistLink += "&artTitle=" + artTitle 
+				}
+
+				if(artistEmail!=null)
+				{
+					artistLink += "&artistEmail=" + artistEmail;
+				}
+
+				var artistSplitUrl = window.location.href.split('/');	
+					artistSplitUrl[artistSplitUrl.length-1] = artistLink
+					viewArtLink = artistSplitUrl.join('/');
+				$("#artistLinkText")[0].value = viewArtLink;
+				$("#artistLink")[0].href = viewArtLink;
 				$(".linkBox").click(function(event){
 					
 					$(this).focus();

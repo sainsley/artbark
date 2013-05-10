@@ -47,11 +47,12 @@
 	</div>
 </div>
   <div class="container">
-    <div class="content hero-unit">
+
+    <div id="signin-holder" class="content hero-unit">
       <div class="row">
         <div class="login-form">
-          <h2>Sign in</h2>
-          <small id="loginInfo" class="muted"></small>
+          <h2>View existing <article></article></h2>
+          <small id="loginInfo" ></small>
           <form action="">
             <fieldset>
               <div class="clearfix">
@@ -66,17 +67,17 @@
     </div>
  
 	
-	<div class="nonCommenter">
+	<div id="or-holder">
 	<br/>
 	<h2>or</h2>
 	<br/>
 	</div>
 	
 
-    <div class="nonCommenter content hero-unit">
+    <div id="getstarted-holder" class="content hero-unit">
       <div class="row">
         <div class="login-form">
-          <h2>I want to upload art</h2>
+          <h2>Upload new art</h2>
           <form action="">
             <fieldset>
               <div class="clearfix">
@@ -114,29 +115,12 @@
       var userGroup;
       var artTitle;
       var artistEmail;
+      var userType; 
 			
 			function getSettingsFromUrl(){
-				if($.getUrlVar('userEmail')) 
-				{
-					userEmail = $.getUrlVar('userEmail');
-					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
-					
-				}
-
-				if($.getUrlVar('userGroup')) 
-				{
-					userGroup = $.getUrlVar('userGroup');
-					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
-          for (var i=0; i<$(".nonCommenter").length;i++)
-          {
-            $(".nonCommenter")[i].style.display = "none";
-          }
-				
-
-
         if($.getUrlVar('artTitle')) 
         {
-          artTitle = $.getUrlVar('artTitle');
+          artTitle = unescape($.getUrlVar('artTitle'));
         }
         else
         {
@@ -152,26 +136,60 @@
           artistEmail = "Unknown Artist"
         }
 
-        $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup.substring(0,userGroup.length-1) + "</strong> to view " + artTitle + " by " + artistEmail;
-}
+        if($.getUrlVar('userType')) 
+        {
+          userType = $.getUrlVar('userType');
+          //trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
 
+          
+        }
+
+        if($.getUrlVar('userEmail')) 
+				{
+					userEmail = $.getUrlVar('userEmail');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+					
+				}
+
+				if($.getUrlVar('userGroup')) 
+				{
+					userGroup = $.getUrlVar('userGroup');
+					//trialsPerUser = (parseInt($.getUrlVar('trialsPerUser')));
+       }
+			};
+
+      function init(){
+        // Default login page only lets you upload art
+        if(userType == null)
+        {
+          $("#signin-holder")[0].style.display = "none";
+          $("#or-holder")[0].style.display = "none";    
+        }
+        else if(userType == "artist")
+        {
+         $("#loginInfo")[0].innerHTML = "Sign in as an <strong>artist</strong> to view your piece titled <strong>" + artTitle + "</strong>";
+        }
+        else if(userType == "commenter")
+        {
+          $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup.substring(0,userGroup.length-1) + "</strong> to view " + artTitle + " by " + artistEmail;
+          $("#or-holder")[0].style.display = "none"; 
+          $("#getstarted-holder")[0].style.display = "none";    
+        }
 
         if(userEmail != null)
         {
           $("#inputLoginEmail")[0].value = userEmail;
         }
-        
-
-			};
+      }
 			
 			$(document).ready(function() {
 				getSettingsFromUrl();
         $('.nav-tabs').button();
 
-
+        init();   
         signIn = function()
         {
-                    userEmail = $("#inputLoginEmail")[0].value ;
+          userEmail = $("#inputLoginEmail")[0].value ;
          
           console.log(userEmail.length)
           console.log("trying to navigate")
@@ -186,13 +204,16 @@
           signIn();
         });
 
-        $("#inputLoginEmail").keyup(function (e) {
-          if (e.keyCode == 13) {
-              signIn();
-          }
-        });
 
-        $("#inputLoginSessionId").keyup(function (e) {
+        $('#inputLoginEmail').keydown(function(event){
+            if(event.keyCode == 13) {
+              event.preventDefault();
+              return false;
+            }
+          });
+
+        $("#inputLoginEmail").keyup(function (e) {
+          //console.log("pressed enter on login")
           if (e.keyCode == 13) {
               signIn();
           }
@@ -201,7 +222,7 @@
 
         getStarted = function()
         {
-                   userEmail = $("#inputGetStartedEmail")[0].value ;
+          userEmail = $("#inputGetStartedEmail")[0].value ;
         
           console.log(userEmail.length)
           console.log("trying to navigate")
@@ -217,12 +238,12 @@
         });
 
 
-$('#inputGetStartedEmail').keydown(function(event){
-    if(event.keyCode == 13) {
-      event.preventDefault();
-      return false;
-    }
-  });
+      $('#inputGetStartedEmail').keydown(function(event){
+          if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+          }
+        });
         $("#inputGetStartedEmail").keyup(function (e) {
           if (e.keyCode == 13) {
               getStarted();
@@ -233,4 +254,4 @@ $('#inputGetStartedEmail').keydown(function(event){
 			});
 	</script>
 </body>
-</html>
+</html> 
