@@ -172,6 +172,8 @@
         else if(userType == "commenter")
         {
           $("#loginInfo")[0].innerHTML = "Sign in as a <strong>" + userGroup.substring(0,userGroup.length-1) + "</strong> to view " + artTitle + " by " + artistEmail;
+          $("#or-holder")[0].style.display = "none"; 
+          $("#getstarted-holder")[0].style.display = "none";    
         }
 
         if(userEmail != null)
@@ -252,4 +254,4 @@
 			});
 	</script>
 </body>
-</html>
+</html> 
