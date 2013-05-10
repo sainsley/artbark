@@ -289,6 +289,15 @@
 						
 					}*/
 				}
+				console.log($("li.comment"))
+				if($("li.comment").length == 0)
+				{
+					$("button.btn-filter").addClass("disabled");
+				}
+				else
+				{
+					$("button.btn-filter").removeClass("disabled");
+				}
 			}
 			// =====================================================
 		
@@ -687,10 +696,8 @@
 					add_group_tag(artistDefinedGroups[i]);
 				}
 
-				if($("li.comment").length == 0)
-				{
-					$("button.btn-filter").addClass("disabled");
-				}
+				console.log("Initializing filters")
+				
 
 				
 				$(".btn-insert-tag").click(function(event)
