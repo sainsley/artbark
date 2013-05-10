@@ -18,9 +18,18 @@ function init(){
 		formData: [{ name: 'userEmail', value: userEmail }, { name: 'title', value: $('#title').val() }]
 	})
 	
-	$('#title').keypress(function(){ 
-		$('#art-file').fileupload('option', 'formData', [{ name: 'userEmail', value: userEmail }, { name: 'title', value: $('#title').val() }])
-	})
+	$('#title').keyup(onTitleChange)
+	$('#title').change(onTitleChange)
+}
+
+function onTitleChange(e){
+		$('#art-file').fileupload('option', 'formData', [{ 
+			name: 'userEmail', 
+			value: userEmail 
+		}, { 
+			name: 'title', 
+			value: $('#title').val() 
+		}])
 }
 
 function onUploadStart(e){
