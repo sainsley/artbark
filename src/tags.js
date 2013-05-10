@@ -26,7 +26,6 @@ function inputTag(e){
 	var text = $('#tags').val()
 	
 	$('#tags').val('')
-	if(tags.indexOf(text) != -1) return
 	
 	// preprocess tags to remove '#'
 	text = text.split('#').join('')
@@ -34,8 +33,17 @@ function inputTag(e){
 	// multitag support
 	text = text.split(/\s+/)
 	
-	tags.push.apply(tags, text)
-	$.each(text, function(i, e){ addTagElement(e) })
+	
+	var newTags = tags.concat(text)
+	var oldTags = tags
+	
+	tags = []
+	for(var i = 0; i < newTags.length; i++){
+		if(tags.indexOf(newTags[i]) == -1) tags.push(newTags[i])
+	}
+	
+	var tagDiff = tags.filter(function(e){ return oldTags.indexOf(e) == -1 })
+	$.each(tagDiff, function(i, e){ addTagElement(e),console.log('adding') })
 }
 
 function addExistingTags(userData){
